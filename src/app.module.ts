@@ -1,12 +1,27 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { DocumentModule } from './document/document.module';
+import { ConfigModule } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
+import { AuthService } from './auth/auth.service';
 
 @Module({
-  imports: [UserModule, DocumentModule],
-  controllers: [AppController],
-  providers: [AppService],
+    imports: [
+        ConfigModule.forRoot(),
+        MongooseModule.forRoot(process.env.URI_MONGO),
+        UserModule,
+        DocumentModule,
+    ],
+    controllers: [AppController],
+    providers: [AppService, AuthService],
 })
-export class AppModule {}
+export class AppModule {
+    // configure(consumer: MiddlewareConsumer) {
+    //     consumer
+    //         .apply(AuthMiddleware)
+    //         .exclude({ path: 'user', method: RequestMethod.POST })
+    //         .forRoutes('*');
+    // }
+}
