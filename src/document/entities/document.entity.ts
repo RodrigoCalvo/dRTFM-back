@@ -11,7 +11,7 @@ export const documentSchema = new Schema({
     keywords: [String],
     author: { type: SchemaTypes.ObjectId, ref: 'User' },
     fork: [{ type: SchemaTypes.ObjectId, ref: 'Document' }],
-    visibility: String,
+    visibility: { type: String, enum: ['public', 'private'] },
 });
 
 export interface iDocument {
@@ -23,5 +23,5 @@ export interface iDocument {
     keywords: [string];
     author: Types.ObjectId;
     fork: Types.ObjectId;
-    visibility: string;
+    visibility: 'public' | 'private';
 }
