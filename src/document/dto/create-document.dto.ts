@@ -6,7 +6,7 @@ export class CreateDocumentDto {
         { text: string; options: { key: string; value: string | number } }
     ];
     keywords: [string];
-    author: Types.ObjectId;
-    fork?: Types.ObjectId;
+    author: string;
+    fork?: string;
     visibility: 'public' | 'private';
 }
