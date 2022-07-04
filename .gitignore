@@ -1,3 +1,5 @@
+.env
+
 # compiled output
 # /dist # Added /dist to perform on-push tests
 /node_modules
