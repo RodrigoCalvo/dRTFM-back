@@ -1,5 +1,8 @@
+.env
+
 # compiled output
-# /dist # Added /dist to perform on-push tests
+# (Add /dist to perform on-push tests if test.yml cries)
+/dist 
 /node_modules
 
 # Logs
