@@ -13,6 +13,7 @@ export const userSchema = new Schema({
         validate: [isEmail, 'Email not valid'],
     },
     password: { type: String, required: true, minlength: 4 },
+    photo: String,
     myDocuments: [{ type: SchemaTypes.ObjectId }],
     myFavs: [{ type: SchemaTypes.ObjectId }],
 });
@@ -22,6 +23,7 @@ export interface iUser {
     name: string;
     email: string;
     password: string;
+    photo: string;
     myDocuments: Array<Types.ObjectId>;
     myFavs: Array<Types.ObjectId>;
 }
