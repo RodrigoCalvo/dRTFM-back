@@ -3,7 +3,7 @@ import { DocumentService } from './document.service';
 import { DocumentController } from './document.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { documentSchema } from './entities/document.entity';
-import { userSchema } from 'src/user/entities/user.entity';
+import { userSchema } from '../user/entities/user.entity';
 
 @Module({
     imports: [
