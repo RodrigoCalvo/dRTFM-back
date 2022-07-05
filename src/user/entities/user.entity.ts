@@ -1,6 +1,6 @@
 import { Schema, SchemaTypes, Types } from 'mongoose';
 
-function isEmail(email: string) {
+export function isEmail(email: string) {
     const regex = /^\w+([.-]?\w+)@\w+([.-]?\w+)(.\w{2,3})+$/;
     return regex.test(email);
 }
@@ -10,7 +10,7 @@ export const userSchema = new Schema({
     email: {
         type: String,
         required: true,
-        validate: [isEmail, 'Email not valid'],
+        validate: { validator: isEmail, message: 'Email not valid' },
         unique: true,
     },
     password: { type: String, required: true, minlength: 4 },
