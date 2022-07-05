@@ -39,19 +39,15 @@ export class UserService {
     }
 
     async loginWithToken(token: string) {
-        try {
-            const decodedToken = this.auth.decodeToken(token);
-            if (typeof decodedToken === 'string') {
-                throw new UnauthorizedException('Token error, not valid');
-            } else {
-                const user = await this.User.findById(decodedToken.id);
-                if (!user) throw new NotFoundException('User not found');
-                //refrescamos token
-                const newToken = this.auth.createToken(user.id);
-                return { user, newToken };
-            }
-        } catch (e) {
-            throw new UnauthorizedException('Token expired');
+        const decodedToken = this.auth.decodeToken(token);
+        if (typeof decodedToken === 'string') {
+            throw new UnauthorizedException('Token error, not valid');
+        } else {
+            const user = await this.User.findById(decodedToken.id);
+            if (!user) throw new NotFoundException('User not found');
+            //refrescamos token
+            const newToken = this.auth.createToken(user.id);
+            return { user, token: newToken };
         }
     }
 
