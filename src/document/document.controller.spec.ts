@@ -16,6 +16,7 @@ describe('DocumentController', () => {
                         create: jest.fn(),
                         fork: jest.fn(),
                         findAll: jest.fn(),
+                        search: jest.fn(),
                         findOne: jest.fn(),
                         update: jest.fn(),
                         remove: jest.fn(),
@@ -54,6 +55,12 @@ describe('DocumentController', () => {
         test('Then service.findAll should be called', () => {
             controller.findAll();
             expect(service.findAll).toHaveBeenCalled();
+        });
+    });
+    describe('When calling controller.search', () => {
+        test('Then service.search should be called', () => {
+            controller.search({ q: '' });
+            expect(service.search).toHaveBeenCalled();
         });
     });
     describe('When calling controller.findOne', () => {
