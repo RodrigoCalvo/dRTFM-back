@@ -36,7 +36,7 @@ describe('DocumentController', () => {
         test('Then service.create should be called', () => {
             controller.create({
                 title: '',
-                content: [{ text: '', options: { key: '', value: 0 } }],
+                content: [{ text: '', options: [{ key: '', value: 0 }] }],
                 keywords: [''],
                 author: '',
                 visibility: 'public',
