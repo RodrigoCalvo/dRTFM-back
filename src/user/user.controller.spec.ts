@@ -18,6 +18,10 @@ describe('UserController', () => {
                         create: jest.fn(),
                         login: jest.fn(),
                         loginWithToken: jest.fn(),
+                        findAll: jest.fn(),
+                        findOne: jest.fn(),
+                        update: jest.fn(),
+                        remove: jest.fn(),
                     },
                 },
                 AuthService,
@@ -70,6 +74,32 @@ describe('UserController', () => {
                 'token'
             );
             expect(service.loginWithToken).toHaveBeenCalled();
+        });
+    });
+    describe('When calling controller.findAll', () => {
+        test('Then service.findAll should be called', () => {
+            controller.findAll();
+            expect(service.findAll).toHaveBeenCalled();
+        });
+    });
+    describe('When calling controller.findOne', () => {
+        test('Then service.findOne should be called', () => {
+            controller.findOne('');
+            expect(service.findOne).toHaveBeenCalled();
+        });
+    });
+    describe('When calling controller.update', () => {
+        test('Then service.update should be called', () => {
+            controller.update('', {
+                email: '',
+            });
+            expect(service.update).toHaveBeenCalled();
+        });
+    });
+    describe('When calling controller.remove', () => {
+        test('Then service.remove should be called', () => {
+            controller.remove('');
+            expect(service.remove).toHaveBeenCalled();
         });
     });
 });
