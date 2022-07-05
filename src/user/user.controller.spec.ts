@@ -39,6 +39,7 @@ describe('UserController', () => {
                 name: 'test',
                 email: 'test',
                 password: 'test',
+                photo: 'test',
                 myDocuments: [],
                 myFavs: [],
             });
