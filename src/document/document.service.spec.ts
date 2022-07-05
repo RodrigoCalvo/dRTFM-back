@@ -74,6 +74,14 @@ describe('DocumentService', () => {
             expect(result).toEqual(mockDocument);
         });
     });
+    describe('When calling service.create with invalid user', () => {
+        test('Then it should throw an exception', async () => {
+            mockUserModel.findById.mockResolvedValueOnce(null);
+            expect(
+                async () => await service.create(mockDocument)
+            ).rejects.toThrow();
+        });
+    });
     describe('When calling service.fork with correct ids', () => {
         test('Then it should return a new document with the new author', async () => {
             mockDocumentModel.create.mockImplementationOnce((args) => args);
@@ -81,14 +89,21 @@ describe('DocumentService', () => {
             expect(result).toEqual({ ...mockDocument, author: mockUser.id });
         });
     });
-    describe('When calling service.fork with incorrect ids', () => {
-        test.todo(
-            'Then it should throw an exception'
-            // , async () => {
-            //     mockUserModel.findById.mockResolvedValueOnce(null);
-            //     await expect(async () => await service.fork('', '')).toThrow();
-            // }
-        );
+    describe('When calling service.fork with incorrect user id', () => {
+        test('Then it should throw an exception', async () => {
+            mockUserModel.findById.mockResolvedValueOnce(null);
+            await expect(
+                async () => await service.fork('', '')
+            ).rejects.toThrow();
+        });
+    });
+    describe('When calling service.fork with incorrect document id', () => {
+        test('Then it should throw an exception', async () => {
+            mockDocumentModel.findById.mockResolvedValueOnce(null);
+            await expect(
+                async () => await service.fork('', '')
+            ).rejects.toThrow();
+        });
     });
     describe('When calling service.findAll', () => {
         test('Then it should return all the documents', async () => {
@@ -130,12 +145,12 @@ describe('DocumentService', () => {
         });
     });
     describe('When calling service.remove with not valid user', () => {
-        test.todo(
-            'Then it should return throw an exception'
-            // , async () => {
-            //     mockUserModel.findByIdAndUpdate.mockResolvedValueOnce(null);
-            //     expect(async () => await service.remove('')).toThrow();
-            // }
-        );
+        test('Then it should return throw an exception', async () => {
+            mockDocumentModel.findById.mockResolvedValueOnce({
+                delete: jest.fn().mockResolvedValue(mockDocument),
+            });
+            mockUserModel.findByIdAndUpdate.mockResolvedValueOnce(null);
+            expect(async () => await service.remove('')).rejects.toThrow();
+        });
     });
 });
