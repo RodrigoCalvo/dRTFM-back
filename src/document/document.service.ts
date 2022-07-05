@@ -47,6 +47,13 @@ export class DocumentService {
         return await this.Document.find().populate('author', { name: 1 });
     }
 
+    async search(query: string) {
+        if (query.length < 3) return;
+        return await this.Document.find({
+            keywords: { $regex: query, $options: 'i' },
+        });
+    }
+
     async findOne(id: string) {
         return await this.Document.findById(id).populate('author', { name: 1 });
     }
@@ -65,8 +72,9 @@ export class DocumentService {
                 $pull: { myDocuments: documentToDelete.id },
             }
         );
+        const deletedDocument = await documentToDelete.delete();
         if (!updatedUser)
             throw new NotFoundException('User not found, document deleted');
-        return documentToDelete;
+        return deletedDocument;
     }
 }

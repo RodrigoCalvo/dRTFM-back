@@ -6,6 +6,7 @@ import {
     Patch,
     Param,
     Delete,
+    Query,
 } from '@nestjs/common';
 import { DocumentService } from './document.service';
 import { CreateDocumentDto } from './dto/create-document.dto';
@@ -28,6 +29,11 @@ export class DocumentController {
     @Get()
     findAll() {
         return this.documentService.findAll();
+    }
+
+    @Get('search')
+    search(@Query() query: { q: string }) {
+        return this.documentService.search(query.q);
     }
 
     @Get(':id')
