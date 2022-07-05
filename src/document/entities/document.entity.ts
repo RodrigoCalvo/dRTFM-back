@@ -5,23 +5,29 @@ export const documentSchema = new Schema({
     content: [
         {
             text: String,
-            options: {},
+            // eslint-disable-next-line @typescript-eslint/ban-types
+            options: [{ key: String, value: SchemaTypes.Mixed }],
         },
     ],
     keywords: [String],
     author: { type: SchemaTypes.ObjectId, ref: 'User' },
-    fork: [{ type: SchemaTypes.ObjectId, ref: 'Document' }],
-    visibility: String,
+    fork: { type: SchemaTypes.ObjectId, ref: 'Document' },
+    visibility: { type: String, enum: ['public', 'private'] },
 });
+
+// documentSchema.index()
 
 export interface iDocument {
     _id?: string;
     title: string;
     content: [
-        { text: string; options: { key: string; value: string | number } }
+        {
+            text: string;
+            options: Array<{ key: string; value: string | number }>;
+        }
     ];
     keywords: [string];
     author: Types.ObjectId;
-    fork: Types.ObjectId;
-    visibility: string;
+    fork?: Types.ObjectId;
+    visibility: 'public' | 'private';
 }

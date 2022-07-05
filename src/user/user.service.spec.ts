@@ -10,6 +10,7 @@ describe('UserService', () => {
         name: 'test',
         email: 'test@test.test',
         password: 'password',
+        photo: '',
         myDocuments: [],
         myFavs: [],
     };

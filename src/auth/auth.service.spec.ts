@@ -1,40 +1,24 @@
-import { Test, TestingModule } from '@nestjs/testing';
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { AuthService } from './auth.service';
-import jwt from 'jsonwebtoken';
+import { sign, verify } from 'jsonwebtoken';
 
+jest.mock('jsonwebtoken');
 const mockSign = jest.fn();
 const mockVerify = jest.fn();
+(sign as jest.Mock) = mockSign;
+(verify as jest.Mock) = mockVerify;
 
 describe('AuthService', () => {
-    let service: AuthService;
-    beforeEach(async () => {
-        const module: TestingModule = await Test.createTestingModule({
-            providers: [AuthService],
-        }).compile();
-
-        service = module.get<AuthService>(AuthService);
-    });
-
-    it('should be defined', () => {
-        expect(service).toBeDefined();
-    });
     describe('When calling createToken method', () => {
-        test.todo(
-            'Then jwt.sign should be called' //, () => {
-            //   jwt.sign = mockSign;
-            //   service.createToken('');
-            //   expect(mockSign).toHaveBeenCalled();
-            // }
-        );
+        test('Then jwt.sign should be called', () => {
+            AuthService.prototype.createToken('');
+            expect(mockSign).toHaveBeenCalled();
+        });
     });
     describe('When calling decodeToken method', () => {
-        test.todo(
-            'Then jwt.sign should be called' //, () => {
-            //   jwt.verify = mockVerify;
-            //   service.decodeToken('');
-            //   expect(mockVerify).toHaveBeenCalled();
-            // }
-        );
+        test('Then jwt.sign should be called', () => {
+            AuthService.prototype.decodeToken('');
+            expect(mockVerify).toHaveBeenCalled();
+        });
     });
 });
-
