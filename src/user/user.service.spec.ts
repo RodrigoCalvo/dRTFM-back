@@ -17,6 +17,7 @@ describe('UserService', () => {
 
     const mockUserModel = {
         create: jest.fn().mockResolvedValue(mockUser),
+        find: jest.fn().mockResolvedValue(mockUser),
         findOne: jest.fn().mockResolvedValue(mockUser),
         findById: jest.fn().mockResolvedValue(mockUser),
         findByIdAndUpdate: jest
@@ -31,7 +32,7 @@ describe('UserService', () => {
     };
 
     const mockAuth = {
-        validateToken: jest.fn().mockReturnValue({ id: 'id' }),
+        decodeToken: jest.fn().mockReturnValue({ id: 'id' }),
         createToken: jest.fn().mockReturnValue('1f1f1f'),
     };
 
@@ -112,31 +113,51 @@ describe('UserService', () => {
             }).rejects.toThrow();
         });
     });
-
+    //por aqui
     describe('When calling service.loginWithToken with a valid token', () => {
-        test.todo(
-            'Then it should return the user data and token' //, async () => {
-            //     const result = await service.loginWithToken('token');
-            //     expect(result).toEqual(mockResponse);
-            // }
-        );
+        test('Then it should return the user data and token', async () => {
+            const result = await service.loginWithToken('token');
+            expect(result).toEqual(mockResponse);
+        });
     });
-
     describe('When calling service.loginWithToken with invalid o expired token', () => {
         test('Then it should throw an unauthorized exception', async () => {
-            mockAuth.validateToken.mockReturnValueOnce('error');
+            mockAuth.decodeToken.mockReturnValueOnce('error');
             expect(async () => {
                 await service.loginWithToken('token');
             }).rejects.toThrow();
         });
     });
-
     describe('When calling service.loginWithToken with a valid token but user does not exist', () => {
         test('Then it should throw an unauthorized exception', async () => {
             mockUserModel.findById.mockResolvedValueOnce(null);
             expect(async () => {
                 await service.loginWithToken('token');
             }).rejects.toThrow();
+        });
+    });
+    describe('When calling service.findAll', () => {
+        test('Then it should return the founded users', async () => {
+            const result = await service.findAll();
+            expect(result).toEqual(mockUser);
+        });
+    });
+    describe('When calling service.findOne', () => {
+        test('Then it should return the founded user', async () => {
+            const result = await service.findOne('');
+            expect(result).toEqual(mockUser);
+        });
+    });
+    describe('When calling service.update', () => {
+        test('Then it should return the updated user', async () => {
+            const result = await service.update('', mockUser);
+            expect(result).toEqual({ ...mockUser, name: 'updated' });
+        });
+    });
+    describe('When calling service.remove', () => {
+        test('Then it should return the founded user', async () => {
+            const result = await service.remove('');
+            expect(result).toEqual(mockUser);
         });
     });
 });
