@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { iUser } from 'src/user/entities/user.entity';
+import { iUser } from '../user/entities/user.entity';
 import { CreateDocumentDto } from './dto/create-document.dto';
 import { UpdateDocumentDto } from './dto/update-document.dto';
 import { iDocument } from './entities/document.entity';
@@ -51,7 +51,7 @@ export class DocumentService {
         if (query.length < 3) return;
         return await this.Document.find({
             keywords: { $regex: query, $options: 'i' },
-        });
+        }).populate('author', { name: 1 });
     }
 
     async findOne(id: string) {
