@@ -5,7 +5,8 @@ export const documentSchema = new Schema({
     content: [
         {
             text: String,
-            options: {},
+            // eslint-disable-next-line @typescript-eslint/ban-types
+            options: [{ key: String, value: SchemaTypes.Mixed }],
         },
     ],
     keywords: [String],
@@ -20,7 +21,10 @@ export interface iDocument {
     _id?: string;
     title: string;
     content: [
-        { text: string; options: { key: string; value: string | number } }
+        {
+            text: string;
+            options: Array<{ key: string; value: string | number }>;
+        }
     ];
     keywords: [string];
     author: Types.ObjectId;

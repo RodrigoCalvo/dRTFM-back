@@ -1,11 +1,10 @@
-import { Types } from 'mongoose';
-
 export class CreateDocumentDto {
     title: string;
-    content: [
-        { text: string; options: { key: string; value: string | number } }
-    ];
-    keywords: [string];
+    content: Array<{
+        text: string;
+        options: Array<{ key: string; value: string | number }>;
+    }>;
+    keywords: Array<string>;
     author: string;
     fork?: string;
     visibility: 'public' | 'private';
