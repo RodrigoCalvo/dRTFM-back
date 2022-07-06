@@ -120,9 +120,19 @@ describe('UserService', () => {
             expect(result).toEqual(mockResponse);
         });
     });
-    describe('When calling service.loginWithToken with invalid o expired token', () => {
+    describe('When calling service.loginWithToken with invalid token', () => {
         test('Then it should throw an unauthorized exception', async () => {
             mockAuth.decodeToken.mockReturnValueOnce('error');
+            expect(async () => {
+                await service.loginWithToken('token');
+            }).rejects.toThrow();
+        });
+    });
+    describe('When calling service.loginWithToken with expired token', () => {
+        test('Then it should throw an unauthorized exception', async () => {
+            mockAuth.decodeToken.mockImplementationOnce(() => {
+                throw new Error();
+            });
             expect(async () => {
                 await service.loginWithToken('token');
             }).rejects.toThrow();
