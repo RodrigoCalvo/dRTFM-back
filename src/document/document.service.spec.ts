@@ -104,13 +104,38 @@ describe('DocumentService', () => {
         test('Then it should throw an exception', async () => {
             mockUserModel.findById.mockResolvedValueOnce(null);
             await expect(
-                async () => await service.fork('', '')
+                async () => await service.fork('', 'token token')
             ).rejects.toThrow();
         });
     });
     describe('When calling service.fork with incorrect document id', () => {
         test('Then it should throw an exception', async () => {
             mockDocumentModel.findById.mockResolvedValueOnce(null);
+            await expect(
+                async () => await service.fork('', 'token token')
+            ).rejects.toThrow();
+        });
+    });
+    describe('When calling service.fork with expired token', () => {
+        test('Then it should throw an exception', async () => {
+            mockAuth.decodeToken.mockImplementationOnce(() => {
+                throw new Error();
+            });
+            await expect(
+                async () => await service.fork('', 'token token')
+            ).rejects.toThrow();
+        });
+    });
+    describe('When calling service.fork with invalid token', () => {
+        test('Then it should throw an exception', async () => {
+            mockAuth.decodeToken.mockReturnValueOnce('');
+            await expect(
+                async () => await service.fork('', 'token token')
+            ).rejects.toThrow();
+        });
+    });
+    describe('When calling service.fork with no token', () => {
+        test('Then it should throw an exception', async () => {
             await expect(
                 async () => await service.fork('', '')
             ).rejects.toThrow();
@@ -135,16 +160,13 @@ describe('DocumentService', () => {
         });
     });
     describe('When calling service.findOne', () => {
-        test.todo(
-            'Then it should return one the documents'
-            // , async () => {
-            //     mockDocumentModel.findById.mockReturnValueOnce({
-            //         populate: jest.fn().mockResolvedValueOnce(mockDocument),
-            //     });
-            //     const result = await service.findOne('');
-            //     expect(result).toEqual(mockDocument);
-            // }
-        );
+        test('Then it should return one the documents', async () => {
+            mockDocumentModel.findById.mockReturnValueOnce({
+                populate: jest.fn().mockResolvedValueOnce(mockDocument),
+            });
+            const result = await service.findOne('');
+            expect(result).toEqual(mockDocument);
+        });
     });
     describe('When calling service.update', () => {
         test('Then it should return the updated document', async () => {
@@ -153,16 +175,13 @@ describe('DocumentService', () => {
         });
     });
     describe('When calling service.remove', () => {
-        test.todo(
-            'Then it should return the removed document'
-            // , async () => {
-            //     mockDocumentModel.findById.mockResolvedValue({
-            //         delete: jest.fn().mockResolvedValue(mockDocument),
-            //     });
-            //     const result = await service.remove('');
-            //     expect(result).toEqual(mockDocument);
-            // }
-        );
+        test('Then it should return the removed document', async () => {
+            mockDocumentModel.findById.mockResolvedValue({
+                delete: jest.fn().mockResolvedValue(mockDocument),
+            });
+            const result = await service.remove('');
+            expect(result).toEqual(mockDocument);
+        });
     });
     describe('When calling service.remove with not valid user', () => {
         test('Then it should return throw an exception', async () => {
