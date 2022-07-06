@@ -5,7 +5,7 @@ import { AuthService } from '../auth/auth.service';
 import { UserMiddleware } from './user.middleware';
 
 describe('Given UserMiddleware', () => {
-    const req = {
+    let req = {
         params: { id: 'docId' },
         get: jest
             .fn()
@@ -70,6 +70,22 @@ describe('Given UserMiddleware', () => {
             });
             expect(() =>
                 userMiddleware.use(req as unknown as Request, res, next)
+            ).rejects.toThrow();
+        });
+    });
+    describe('When use function is called without token', () => {
+        test('Then it should call throw an exception', async () => {
+            req = {
+                params: { id: 'docId' },
+                get: jest.fn().mockReturnValue(''),
+            };
+            expect(
+                async () =>
+                    await userMiddleware.use(
+                        req as unknown as Request,
+                        res,
+                        next
+                    )
             ).rejects.toThrow();
         });
     });
