@@ -13,12 +13,13 @@ import { AuthService } from '../auth/auth.service';
 @Injectable()
 export class UserMiddleware implements NestMiddleware {
     constructor(
-        @InjectModel('User') private readonly Document: Model<iDocument>,
+        @InjectModel('Document') private readonly Document: Model<iDocument>,
         private readonly auth: AuthService
     ) {}
     async use(req: Request, res: Response, next: NextFunction) {
-        const token = req.get('Authorization').substring(7); //token -bearer
-        const decodedToken = this.auth.decodeToken(token);
+        const token = req.get('Authorization');
+        if (!token) throw new UnauthorizedException("Token doesn't exist");
+        const decodedToken = this.auth.decodeToken(token.substring(7));
         const documentId = req.params.id as string;
         if (typeof decodedToken === 'string') {
             throw new UnauthorizedException('Token invalid');
