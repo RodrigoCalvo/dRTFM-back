@@ -10,7 +10,7 @@ describe('Given UserMiddleware', () => {
         get: jest
             .fn()
             .mockReturnValue(
-                'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyYzNmMmEwNTI4NzA4N2JlYzE3YTNkYSIsImlhdCI6MTY1NzEwMTA4MCwiZXhwIjoxNjU3MTA0NjgwfQ.6GifQcJgGtzFZCgebeooLnPdqCddrS4ciOwZMR8NGT4'
+                'bearer token'
             ),
     };
     const res: Response = {} as Response;
