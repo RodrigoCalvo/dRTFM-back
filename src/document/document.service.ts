@@ -34,10 +34,10 @@ export class DocumentService {
         try {
             decodedToken = this.auth.decodeToken(token.substring(7));
         } catch (e) {
-            throw new JsonWebTokenError('Token invalid'); //prueba a ver si Nest gestiona errores de jwt
+            throw new UnauthorizedException('Token expired');
         }
         if (typeof decodedToken === 'string')
-            throw new JsonWebTokenError('Token invalid');
+            throw new JsonWebTokenError('Token invalid'); //prueba a ver si Nest gestiona errores de jwt
         const idUser = decodedToken.id as string;
         const baseDocument = await this.Document.findById(idDocument);
         const user = await this.User.findById(idUser);
