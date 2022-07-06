@@ -20,7 +20,7 @@ export class AuthMiddleware implements NestMiddleware {
             throw new UnauthorizedException('Token expired');
         }
         if (typeof decodedToken === 'string')
-            throw new UnauthorizedException('Token expired');
+            throw new UnauthorizedException('Token invalid');
         next();
     }
 }

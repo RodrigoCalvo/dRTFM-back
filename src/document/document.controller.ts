@@ -7,6 +7,7 @@ import {
     Param,
     Delete,
     Query,
+    Headers,
 } from '@nestjs/common';
 import { DocumentService } from './document.service';
 import { CreateDocumentDto } from './dto/create-document.dto';
@@ -21,9 +22,9 @@ export class DocumentController {
         return this.documentService.create(createDocumentDto);
     }
 
-    @Post(':id') // TODO: CAMBIAR PARA QUE OBTENGA LA ID DE USER DEL TOKEN DE AUTH
-    fork(@Param('id') id: string, @Body() idUser: string) {
-        return this.documentService.fork(id, idUser);
+    @Post(':id')
+    fork(@Param('id') id: string, @Headers('Authorization') token: string) {
+        return this.documentService.fork(id, token);
     }
 
     @Get()

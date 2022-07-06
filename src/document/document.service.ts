@@ -1,6 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+    Injectable,
+    NotFoundException,
+    UnauthorizedException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { JsonWebTokenError, JwtPayload } from 'jsonwebtoken';
 import { Model } from 'mongoose';
+import { AuthService } from '../auth/auth.service';
 import { iUser } from '../user/entities/user.entity';
 import { CreateDocumentDto } from './dto/create-document.dto';
 import { UpdateDocumentDto } from './dto/update-document.dto';
@@ -10,7 +16,8 @@ import { iDocument } from './entities/document.entity';
 export class DocumentService {
     constructor(
         @InjectModel('Document') private readonly Document: Model<iDocument>,
-        @InjectModel('User') private readonly User: Model<iUser>
+        @InjectModel('User') private readonly User: Model<iUser>,
+        private readonly auth: AuthService
     ) {}
     async create(createDocumentDto: CreateDocumentDto) {
         const user = await this.User.findById(createDocumentDto.author);
@@ -21,7 +28,17 @@ export class DocumentService {
         return newDocument;
     }
 
-    async fork(idDocument: string, idUser: string) {
+    async fork(idDocument: string, token: string) {
+        if (!token) throw new UnauthorizedException('User not identified');
+        let decodedToken: string | JwtPayload;
+        try {
+            decodedToken = this.auth.decodeToken(token.substring(7));
+        } catch (e) {
+            throw new JsonWebTokenError('Token invalid'); //prueba a ver si Nest gestiona errores de jwt
+        }
+        if (typeof decodedToken === 'string')
+            throw new JsonWebTokenError('Token invalid');
+        const idUser = decodedToken.id as string;
         const baseDocument = await this.Document.findById(idDocument);
         const user = await this.User.findById(idUser);
         if (baseDocument && user) {
