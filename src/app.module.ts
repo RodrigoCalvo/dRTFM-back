@@ -7,6 +7,7 @@ import { DocumentModule } from './document/document.module';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthService } from './auth/auth.service';
+import { AuthMiddleware } from './middlewares/auth.middleware';
 
 @Module({
     imports: [
@@ -19,10 +20,10 @@ import { AuthService } from './auth/auth.service';
     providers: [AppService, AuthService],
 })
 export class AppModule {
-    // configure(consumer: MiddlewareConsumer) {
-    //     consumer
-    //         .apply(AuthMiddleware)
-    //         .exclude({ path: 'user', method: RequestMethod.POST })
-    //         .forRoutes('*');
-    // }
+    configure(consumer: MiddlewareConsumer) {
+        consumer
+            .apply(AuthMiddleware)
+            .exclude({ path: 'user', method: RequestMethod.POST })
+            .forRoutes('*');
+    }
 }
