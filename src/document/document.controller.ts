@@ -21,7 +21,7 @@ export class DocumentController {
         return this.documentService.create(createDocumentDto);
     }
 
-    @Post(':id')
+    @Post(':id') // TODO: CAMBIAR PARA QUE OBTENGA LA ID DE USER DEL TOKEN DE AUTH
     fork(@Param('id') id: string, @Body() idUser: string) {
         return this.documentService.fork(id, idUser);
     }

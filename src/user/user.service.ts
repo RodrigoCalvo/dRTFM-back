@@ -4,6 +4,7 @@ import {
     UnauthorizedException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { JwtPayload } from 'jsonwebtoken';
 import { Model } from 'mongoose';
 import { AuthService } from '../auth/auth.service';
 import { BcryptService } from '../auth/bcrypt.service';
@@ -39,7 +40,12 @@ export class UserService {
     }
 
     async loginWithToken(token: string) {
-        const decodedToken = this.auth.decodeToken(token);
+        let decodedToken: string | JwtPayload;
+        try {
+            decodedToken = this.auth.decodeToken(token);
+        } catch (e) {
+            throw new UnauthorizedException('Session expired');
+        }
         if (typeof decodedToken === 'string') {
             throw new UnauthorizedException('Token error, not valid');
         } else {
