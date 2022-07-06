@@ -8,6 +8,7 @@ import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthService } from './auth/auth.service';
 import { AuthMiddleware } from './middlewares/auth.middleware';
+import { UserMiddleware } from './middlewares/user.middleware';
 
 @Module({
     imports: [
@@ -24,6 +25,11 @@ export class AppModule {
         consumer
             .apply(AuthMiddleware)
             .exclude({ path: 'user', method: RequestMethod.POST })
-            .forRoutes('*');
+            .forRoutes('*')
+            .apply(UserMiddleware)
+            .forRoutes(
+                { path: 'document', method: RequestMethod.PATCH },
+                { path: 'document', method: RequestMethod.DELETE }
+            );
     }
 }
