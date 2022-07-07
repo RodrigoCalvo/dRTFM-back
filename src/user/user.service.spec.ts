@@ -73,10 +73,21 @@ describe('UserService', () => {
         expect(service).toBeDefined();
     });
 
-    describe('When calling service.create', () => {
+    describe('When calling service.create with all data', () => {
         test('Then it should return the saved user', async () => {
             const result = await service.create(mockUser);
             expect(result).toEqual(mockResponse);
+        });
+    });
+    describe('When calling service.create without all data', () => {
+        test('Then it should throw an exception', async () => {
+            mockUserModel.create.mockImplementationOnce(() => {
+                throw new Error();
+            });
+
+            expect(
+                async () => await service.create(mockUser)
+            ).rejects.toThrow();
         });
     });
 
