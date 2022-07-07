@@ -50,4 +50,9 @@ export class UserController {
     remove(@Param('id') id: string) {
         return this.userService.remove(id);
     }
+
+    @Delete()
+    removeSelf(@Headers('Authorization') token: string) {
+        return this.userService.removeSelf(token);
+    }
 }
