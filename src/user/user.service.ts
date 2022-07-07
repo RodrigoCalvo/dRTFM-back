@@ -24,7 +24,12 @@ export class UserService {
             ...createUserDto,
             password: this.bcrypt.encrypt(createUserDto.password),
         });
-        const token = this.auth.createToken(newUser.id);
+        let token: string;
+        try {
+            token = this.auth.createToken(newUser.id);
+        } catch (e) {
+            throw e;
+        }
         return { user: newUser, token };
     }
 
