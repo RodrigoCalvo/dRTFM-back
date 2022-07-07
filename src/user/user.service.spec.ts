@@ -124,7 +124,6 @@ describe('UserService', () => {
             }).rejects.toThrow();
         });
     });
-    //por aqui
     describe('When calling service.loginWithToken with a valid token', () => {
         test('Then it should return the user data and token', async () => {
             const result = await service.loginWithToken('token');
@@ -179,6 +178,38 @@ describe('UserService', () => {
         test('Then it should return the founded user', async () => {
             const result = await service.remove('');
             expect(result).toEqual(mockUser);
+        });
+    });
+    describe('When calling service.removeSelf with a valid token', () => {
+        test('Then it should return confirm object', async () => {
+            const result = await service.removeSelf('token');
+            expect(result).toEqual({ deleted: true });
+        });
+    });
+    describe('When calling service.removeSelf with invalid token', () => {
+        test('Then it should throw an unauthorized exception', async () => {
+            mockAuth.decodeToken.mockReturnValueOnce('error');
+            expect(async () => {
+                await service.removeSelf('token');
+            }).rejects.toThrow();
+        });
+    });
+    describe('When calling service.removeSelf with expired token', () => {
+        test('Then it should throw an unauthorized exception', async () => {
+            mockAuth.decodeToken.mockImplementationOnce(() => {
+                throw new Error();
+            });
+            expect(async () => {
+                await service.removeSelf('token');
+            }).rejects.toThrow();
+        });
+    });
+    describe('When calling service.removeSelf with a valid token but user does not exist', () => {
+        test('Then it should throw an unauthorized exception', async () => {
+            mockUserModel.findById.mockResolvedValueOnce(null);
+            expect(async () => {
+                await service.removeSelf('token');
+            }).rejects.toThrow();
         });
     });
 });
