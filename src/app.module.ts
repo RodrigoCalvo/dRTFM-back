@@ -10,6 +10,7 @@ import { AuthService } from './auth/auth.service';
 import { AuthMiddleware } from './middlewares/auth.middleware';
 import { UserMiddleware } from './middlewares/user.middleware';
 import { documentSchema } from './document/entities/document.entity';
+import { userSchema } from './user/entities/user.entity';
 
 @Module({
     imports: [
@@ -23,6 +24,7 @@ import { documentSchema } from './document/entities/document.entity';
         DocumentModule,
         MongooseModule.forFeature([
             { name: 'Document', schema: documentSchema },
+            { name: 'User', schema: userSchema },
         ]),
     ],
     controllers: [AppController],
