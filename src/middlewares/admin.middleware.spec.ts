@@ -25,15 +25,16 @@ describe('Given AdminMiddleware', () => {
     describe('When use function is called with correct token', () => {
         test('Then it should call next without error', async () => {
             (mockAuthService.decodeToken as jest.Mock).mockReturnValueOnce({
-                id: 'test1',
+                id: 'test',
             });
             (mockUserModel.findById as jest.Mock).mockResolvedValueOnce({
-                role: { toString: () => 'test1' },
+                role: 'admin',
             });
             await adminMiddleware.use(req as unknown as Request, res, next);
             expect(next).toHaveBeenCalled();
         });
     });
+
     describe('When use function is called with incorrect token', () => {
         test('Then it should throw an exception', () => {
             (mockAuthService.decodeToken as jest.Mock).mockReturnValueOnce('');
@@ -42,24 +43,25 @@ describe('Given AdminMiddleware', () => {
             ).rejects.toThrow();
         });
     });
-    describe('When use function is called with non valid documentId', () => {
+    describe('When use function is called with expired token', () => {
         test('Then it should throw an exception', () => {
-            (mockAuthService.decodeToken as jest.Mock).mockReturnValueOnce({
-                id: 'test1',
-            });
-            (mockUserModel.findById as jest.Mock).mockResolvedValueOnce(null);
+            (mockAuthService.decodeToken as jest.Mock).mockImplementationOnce(
+                () => {
+                    throw new Error();
+                }
+            );
             expect(() =>
                 adminMiddleware.use(req as unknown as Request, res, next)
             ).rejects.toThrow();
         });
     });
-    describe('When use function is called with valid documentId and correct token but author and user dont match', () => {
+    describe('When use function is called with a role:user user token', () => {
         test('Then it should throw an exception', () => {
             (mockAuthService.decodeToken as jest.Mock).mockReturnValueOnce({
-                id: 'test1',
+                id: 'test',
             });
             (mockUserModel.findById as jest.Mock).mockResolvedValueOnce({
-                author: { toString: () => 'test2' },
+                role: 'user',
             });
             expect(() =>
                 adminMiddleware.use(req as unknown as Request, res, next)
