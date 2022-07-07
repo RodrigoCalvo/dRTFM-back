@@ -18,7 +18,7 @@ import { AdminMiddleware } from './middlewares/admin.middleware';
         ConfigModule.forRoot(),
         MongooseModule.forRoot(
             process.env.NODE_ENV === 'test'
-                ? process.env.URI_MONGO_TESTING
+                ? process.env.URI_MONGO_TEST
                 : process.env.URI_MONGO
         ),
         UserModule,
