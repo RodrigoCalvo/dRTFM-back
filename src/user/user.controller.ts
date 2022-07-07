@@ -41,7 +41,7 @@ export class UserController {
         return this.userService.findOne(id);
     }
 
-    @Patch(':id')
+    @Patch()
     update(
         @Headers('Authorization') token: string,
         @Body() updateUserDto: UpdateUserDto
