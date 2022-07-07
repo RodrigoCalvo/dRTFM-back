@@ -14,7 +14,11 @@ import { documentSchema } from './document/entities/document.entity';
 @Module({
     imports: [
         ConfigModule.forRoot(),
-        MongooseModule.forRoot(process.env.URI_MONGO),
+        MongooseModule.forRoot(
+            process.env.NODE_ENV === 'test'
+                ? process.env.URI_MONGO_TESTING
+                : process.env.URI_MONGO
+        ),
         UserModule,
         DocumentModule,
         MongooseModule.forFeature([
