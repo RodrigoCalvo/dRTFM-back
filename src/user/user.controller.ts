@@ -42,12 +42,20 @@ export class UserController {
     }
 
     @Patch(':id')
-    update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-        return this.userService.update(id, updateUserDto);
+    update(
+        @Headers('Authorization') token: string,
+        @Body() updateUserDto: UpdateUserDto
+    ) {
+        return this.userService.update(token, updateUserDto);
     }
 
     @Delete(':id')
     remove(@Param('id') id: string) {
         return this.userService.remove(id);
+    }
+
+    @Delete()
+    removeSelf(@Headers('Authorization') token: string) {
+        return this.userService.removeSelf(token);
     }
 }

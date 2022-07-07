@@ -9,9 +9,15 @@ const mockCompare = jest.fn();
 (compareSync as jest.Mock) = mockCompare;
 
 describe('BcryptService', () => {
-    describe('When service.encrypt method is called', () => {
-        test('Then bcryptjs.hashSync should be called', () => {
+    describe('When service.encrypt method is called without a password', () => {
+        test('Then bcryptjs.hashSync should not be called', () => {
             BcryptService.prototype.encrypt('');
+            expect(mockEncrypt).not.toHaveBeenCalled();
+        });
+    });
+    describe('When service.encrypt method is called with a password', () => {
+        test('Then bcryptjs.hashSync should be called', () => {
+            BcryptService.prototype.encrypt('test');
             expect(mockEncrypt).toHaveBeenCalled();
         });
     });

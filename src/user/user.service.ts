@@ -1,4 +1,5 @@
 import {
+    BadRequestException,
     Injectable,
     NotFoundException,
     UnauthorizedException,
@@ -20,12 +21,16 @@ export class UserService {
         private readonly bcrypt: BcryptService
     ) {}
     async create(createUserDto: CreateUserDto) {
-        const newUser = await this.User.create({
-            ...createUserDto,
-            password: this.bcrypt.encrypt(createUserDto.password),
-        });
-        const token = this.auth.createToken(newUser.id);
-        return { user: newUser, token };
+        try {
+            const newUser = await this.User.create({
+                ...createUserDto,
+                password: this.bcrypt.encrypt(createUserDto.password),
+            });
+            const token = this.auth.createToken(newUser.id);
+            return { user: newUser, token };
+        } catch (e) {
+            throw new BadRequestException('Validation error');
+        }
     }
 
     async login(loginData: { email: string; password: string }) {
@@ -65,13 +70,44 @@ export class UserService {
         return await this.User.findById(id);
     }
 
-    async update(id: string, updateUserDto: UpdateUserDto) {
-        return await this.User.findByIdAndUpdate(id, updateUserDto, {
-            new: true,
-        });
+    async update(token: string, updateUserDto: UpdateUserDto) {
+        if (!token) throw new UnauthorizedException("Token doesn't exist");
+        let decodedToken: string | JwtPayload;
+        try {
+            decodedToken = this.auth.decodeToken(token);
+        } catch (e) {
+            throw new UnauthorizedException('Session expired');
+        }
+        if (typeof decodedToken === 'string') {
+            throw new UnauthorizedException('Token error, not valid');
+        }
+        return await this.User.findByIdAndUpdate(
+            decodedToken.id,
+            updateUserDto,
+            {
+                new: true,
+            }
+        );
     }
 
     async remove(id: string) {
         return await this.User.findByIdAndDelete(id);
+    }
+
+    async removeSelf(token: string) {
+        if (!token) throw new UnauthorizedException("Token doesn't exist");
+        let decodedToken: string | JwtPayload;
+        try {
+            decodedToken = this.auth.decodeToken(token);
+        } catch (e) {
+            throw new UnauthorizedException('Session expired');
+        }
+        if (typeof decodedToken === 'string') {
+            throw new UnauthorizedException('Token error, not valid');
+        }
+        const user = await this.User.findById(decodedToken.id);
+        if (!user) throw new NotFoundException('User not found');
+        this.User.findByIdAndDelete(decodedToken.id);
+        return { deleted: true };
     }
 }

@@ -10,15 +10,22 @@ import { AuthService } from './auth/auth.service';
 import { AuthMiddleware } from './middlewares/auth.middleware';
 import { UserMiddleware } from './middlewares/user.middleware';
 import { documentSchema } from './document/entities/document.entity';
+import { userSchema } from './user/entities/user.entity';
+import { AdminMiddleware } from './middlewares/admin.middleware';
 
 @Module({
     imports: [
         ConfigModule.forRoot(),
-        MongooseModule.forRoot(process.env.URI_MONGO),
+        MongooseModule.forRoot(
+            process.env.NODE_ENV === 'test'
+                ? process.env.URI_MONGO_TESTING
+                : process.env.URI_MONGO
+        ),
         UserModule,
         DocumentModule,
         MongooseModule.forFeature([
             { name: 'Document', schema: documentSchema },
+            { name: 'User', schema: userSchema },
         ]),
     ],
     controllers: [AppController],
@@ -39,6 +46,8 @@ export class AppModule {
             .forRoutes(
                 { path: 'document', method: RequestMethod.PATCH },
                 { path: 'document', method: RequestMethod.DELETE }
-            );
+            )
+            .apply(AdminMiddleware)
+            .forRoutes({ path: 'user/:id', method: RequestMethod.DELETE });
     }
 }

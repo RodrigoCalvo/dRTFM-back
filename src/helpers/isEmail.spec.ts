@@ -1,4 +1,4 @@
-import { isEmail } from './user.entity';
+import { isEmail } from './isEmail';
 
 describe('Name of the group', () => {
     test('should ', () => {
