@@ -70,10 +70,24 @@ export class UserService {
         return await this.User.findById(id);
     }
 
-    async update(id: string, updateUserDto: UpdateUserDto) {
-        return await this.User.findByIdAndUpdate(id, updateUserDto, {
-            new: true,
-        });
+    async update(token: string, updateUserDto: UpdateUserDto) {
+        if (!token) throw new UnauthorizedException("Token doesn't exist");
+        let decodedToken: string | JwtPayload;
+        try {
+            decodedToken = this.auth.decodeToken(token);
+        } catch (e) {
+            throw new UnauthorizedException('Session expired');
+        }
+        if (typeof decodedToken === 'string') {
+            throw new UnauthorizedException('Token error, not valid');
+        }
+        return await this.User.findByIdAndUpdate(
+            decodedToken.id,
+            updateUserDto,
+            {
+                new: true,
+            }
+        );
     }
 
     async remove(id: string) {
@@ -81,6 +95,7 @@ export class UserService {
     }
 
     async removeSelf(token: string) {
+        if (!token) throw new UnauthorizedException("Token doesn't exist");
         let decodedToken: string | JwtPayload;
         try {
             decodedToken = this.auth.decodeToken(token);
