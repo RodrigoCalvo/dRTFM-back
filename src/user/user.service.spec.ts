@@ -168,9 +168,36 @@ describe('UserService', () => {
             expect(result).toEqual(mockUser);
         });
     });
+
+    describe('When calling service.update with no token', () => {
+        test('Then it should throw an unauthorized exception', async () => {
+            expect(async () => {
+                await service.update(null, mockUser);
+            }).rejects.toThrow();
+        });
+    });
+    describe('When calling service.update with invalid token', () => {
+        test('Then it should throw an unauthorized exception', async () => {
+            mockAuth.decodeToken.mockReturnValueOnce('error');
+            expect(async () => {
+                await service.update('token', mockUser);
+            }).rejects.toThrow();
+        });
+    });
+    describe('When calling service.update with expired token', () => {
+        test('Then it should throw an unauthorized exception', async () => {
+            mockAuth.decodeToken.mockImplementationOnce(() => {
+                throw new Error();
+            });
+            expect(async () => {
+                await service.update('token', mockUser);
+            }).rejects.toThrow();
+        });
+    });
     describe('When calling service.update', () => {
         test('Then it should return the updated user', async () => {
-            const result = await service.update('', mockUser);
+            mockAuth.decodeToken.mockReturnValueOnce({ id: 'test' });
+            const result = await service.update('token', mockUser);
             expect(result).toEqual({ ...mockUser, name: 'updated' });
         });
     });
@@ -209,6 +236,13 @@ describe('UserService', () => {
             mockUserModel.findById.mockResolvedValueOnce(null);
             expect(async () => {
                 await service.removeSelf('token');
+            }).rejects.toThrow();
+        });
+    });
+    describe('When calling service.removeSelf without token', () => {
+        test('Then it should throw an unauthorized exception', async () => {
+            expect(async () => {
+                await service.removeSelf('');
             }).rejects.toThrow();
         });
     });
