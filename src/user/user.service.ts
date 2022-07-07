@@ -81,6 +81,18 @@ export class UserService {
     }
 
     async removeSelf(token: string) {
-        return 'Ya va ya va, todo';
+        let decodedToken: string | JwtPayload;
+        try {
+            decodedToken = this.auth.decodeToken(token);
+        } catch (e) {
+            throw new UnauthorizedException('Session expired');
+        }
+        if (typeof decodedToken === 'string') {
+            throw new UnauthorizedException('Token error, not valid');
+        }
+        const user = await this.User.findById(decodedToken.id);
+        if (!user) throw new NotFoundException('User not found');
+        this.User.findByIdAndDelete(decodedToken.id);
+        return { deleted: true };
     }
 }
