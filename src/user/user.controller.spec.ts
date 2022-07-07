@@ -22,6 +22,7 @@ describe('UserController', () => {
                         findOne: jest.fn(),
                         update: jest.fn(),
                         remove: jest.fn(),
+                        removeSelf: jest.fn(),
                     },
                 },
                 AuthService,
@@ -100,6 +101,12 @@ describe('UserController', () => {
         test('Then service.remove should be called', () => {
             controller.remove('');
             expect(service.remove).toHaveBeenCalled();
+        });
+    });
+    describe('When calling controller.removeSelf', () => {
+        test('Then service.removeSelf should be called', () => {
+            controller.removeSelf('');
+            expect(service.removeSelf).toHaveBeenCalled();
         });
     });
 });
