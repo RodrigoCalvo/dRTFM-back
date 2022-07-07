@@ -79,4 +79,8 @@ export class UserService {
     async remove(id: string) {
         return await this.User.findByIdAndDelete(id);
     }
+
+    async removeSelf(token: string) {
+        return 'Ya va ya va, todo';
+    }
 }
