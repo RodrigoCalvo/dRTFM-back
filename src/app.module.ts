@@ -11,6 +11,7 @@ import { AuthMiddleware } from './middlewares/auth.middleware';
 import { UserMiddleware } from './middlewares/user.middleware';
 import { documentSchema } from './document/entities/document.entity';
 import { userSchema } from './user/entities/user.entity';
+import { AdminMiddleware } from './middlewares/admin.middleware';
 
 @Module({
     imports: [
@@ -45,6 +46,8 @@ export class AppModule {
             .forRoutes(
                 { path: 'document', method: RequestMethod.PATCH },
                 { path: 'document', method: RequestMethod.DELETE }
-            );
+            )
+            .apply(AdminMiddleware)
+            .forRoutes({ path: 'user/:id', method: RequestMethod.DELETE });
     }
 }
