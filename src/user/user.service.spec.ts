@@ -198,7 +198,11 @@ describe('UserService', () => {
         test('Then it should return the updated user', async () => {
             mockAuth.decodeToken.mockReturnValueOnce({ id: 'test' });
             const result = await service.update('token', mockUser);
-            expect(result).toEqual({ ...mockUser, name: 'updated' });
+            expect(result).toEqual({
+                ...mockUser,
+                name: 'updated',
+                password: 'password',
+            });
         });
     });
     describe('When calling service.remove', () => {
