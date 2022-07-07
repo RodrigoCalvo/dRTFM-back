@@ -81,6 +81,11 @@ export class UserService {
         if (typeof decodedToken === 'string') {
             throw new UnauthorizedException('Token error, not valid');
         }
+        if (updateUserDto.password) {
+            updateUserDto.password = this.bcrypt.encrypt(
+                updateUserDto.password
+            );
+        }
         return await this.User.findByIdAndUpdate(
             decodedToken.id,
             updateUserDto,
