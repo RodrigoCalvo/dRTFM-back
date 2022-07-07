@@ -112,7 +112,6 @@ export class UserService {
         }
         const user = await this.User.findById(decodedToken.id);
         if (!user) throw new NotFoundException('User not found');
-        // this.User.findByIdAndDelete(decodedToken.id);
         user.delete();
         return { deleted: true };
     }
