@@ -1,4 +1,5 @@
 import {
+    BadRequestException,
     Injectable,
     NotFoundException,
     UnauthorizedException,
@@ -20,17 +21,16 @@ export class UserService {
         private readonly bcrypt: BcryptService
     ) {}
     async create(createUserDto: CreateUserDto) {
-        const newUser = await this.User.create({
-            ...createUserDto,
-            password: this.bcrypt.encrypt(createUserDto.password),
-        });
-        let token: string;
         try {
-            token = this.auth.createToken(newUser.id);
+            const newUser = await this.User.create({
+                ...createUserDto,
+                password: this.bcrypt.encrypt(createUserDto.password),
+            });
+            const token = this.auth.createToken(newUser.id);
+            return { user: newUser, token };
         } catch (e) {
-            throw e;
+            throw new BadRequestException('Validation error');
         }
-        return { user: newUser, token };
     }
 
     async login(loginData: { email: string; password: string }) {
