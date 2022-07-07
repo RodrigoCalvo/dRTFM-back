@@ -7,4 +7,5 @@ export class CreateUserDto {
     photo: string;
     myDocuments: Array<Types.ObjectId>;
     myFavs: Array<Types.ObjectId>;
+    role?: 'user' | 'admin';
 }
