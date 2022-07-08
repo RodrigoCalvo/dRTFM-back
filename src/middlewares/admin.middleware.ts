@@ -7,7 +7,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { NextFunction, Request, Response } from 'express';
 import { JwtPayload } from 'jsonwebtoken';
 import { Model } from 'mongoose';
-import { iUser } from 'src/user/entities/user.entity';
+import { iUser } from '../user/entities/user.entity';
 import { AuthService } from '../auth/auth.service';
 
 @Injectable()
