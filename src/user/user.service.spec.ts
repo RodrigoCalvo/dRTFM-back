@@ -1,5 +1,6 @@
 import { getModelToken, MongooseModule } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
+import { documentSchema } from '../document/entities/document.entity';
 import { AuthService } from '../auth/auth.service';
 import { BcryptService } from '../auth/bcrypt.service';
 import { userSchema } from './entities/user.entity';
@@ -25,6 +26,10 @@ describe('UserService', () => {
             .mockResolvedValue({ ...mockUser, name: 'updated' }),
         findByIdAndDelete: jest.fn().mockResolvedValue(mockUser),
     };
+    const mockDocumentModel = {
+        find: jest.fn(),
+        deleteMany: jest.fn(),
+    };
 
     const mockBcrypt = {
         encrypt: jest.fn().mockReturnValue('hashpw'),
@@ -48,6 +53,7 @@ describe('UserService', () => {
             imports: [
                 MongooseModule.forFeature([
                     { name: 'User', schema: userSchema },
+                    { name: 'Document', schema: documentSchema },
                 ]),
             ],
             providers: [
@@ -64,6 +70,8 @@ describe('UserService', () => {
         })
             .overrideProvider(getModelToken('User'))
             .useValue(mockUserModel)
+            .overrideProvider(getModelToken('Document'))
+            .useValue(mockDocumentModel)
             .compile();
 
         service = module.get<UserService>(UserService);
@@ -209,6 +217,12 @@ describe('UserService', () => {
         test('Then it should return the founded user', async () => {
             const result = await service.remove('');
             expect(result).toEqual(mockUser);
+        });
+    });
+    describe('When calling service.remove with invalid user id', () => {
+        test('Then it should throw an exception', async () => {
+            mockUserModel.findById.mockResolvedValueOnce(null);
+            expect(async () => await service.remove('')).rejects.toThrow();
         });
     });
     describe('When calling service.removeSelf with a valid token', () => {
