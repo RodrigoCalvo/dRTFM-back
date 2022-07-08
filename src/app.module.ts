@@ -17,9 +17,13 @@ import { AdminMiddleware } from './middlewares/admin.middleware';
     imports: [
         ConfigModule.forRoot(),
         MongooseModule.forRoot(
-            process.env.NODE_ENV === 'test'
-                ? process.env.URI_MONGO_TEST
-                : process.env.URI_MONGO
+            `mongodb+srv://${process.env.MONGO_USER}:${
+                process.env.PASSWORD
+            }@cluster0.u6vyu.mongodb.net/${
+                process.env.NODE_ENV === 'test'
+                    ? process.env.DBNAME
+                    : process.env.TEST_DBNAME
+            }?retryWrites=true&w=majority`
         ),
         UserModule,
         DocumentModule,
