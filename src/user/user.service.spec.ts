@@ -213,6 +213,7 @@ describe('UserService', () => {
     });
     describe('When calling service.removeSelf with a valid token', () => {
         test('Then it should return confirm object', async () => {
+            mockUserModel.findById.mockResolvedValueOnce({ delete: jest.fn() });
             const result = await service.removeSelf('token');
             expect(result).toEqual({ deleted: true });
         });

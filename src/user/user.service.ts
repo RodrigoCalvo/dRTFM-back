@@ -47,7 +47,7 @@ export class UserService {
     async loginWithToken(token: string) {
         let decodedToken: string | JwtPayload;
         try {
-            decodedToken = this.auth.decodeToken(token);
+            decodedToken = this.auth.decodeToken(token.substring(7));
         } catch (e) {
             throw new UnauthorizedException('Session expired');
         }
@@ -74,7 +74,7 @@ export class UserService {
         if (!token) throw new UnauthorizedException("Token doesn't exist");
         let decodedToken: string | JwtPayload;
         try {
-            decodedToken = this.auth.decodeToken(token);
+            decodedToken = this.auth.decodeToken(token.substring(7));
         } catch (e) {
             throw new UnauthorizedException('Session expired');
         }
@@ -103,7 +103,7 @@ export class UserService {
         if (!token) throw new UnauthorizedException("Token doesn't exist");
         let decodedToken: string | JwtPayload;
         try {
-            decodedToken = this.auth.decodeToken(token);
+            decodedToken = this.auth.decodeToken(token.substring(7));
         } catch (e) {
             throw new UnauthorizedException('Session expired');
         }
@@ -112,7 +112,7 @@ export class UserService {
         }
         const user = await this.User.findById(decodedToken.id);
         if (!user) throw new NotFoundException('User not found');
-        this.User.findByIdAndDelete(decodedToken.id);
+        user.delete();
         return { deleted: true };
     }
 }
