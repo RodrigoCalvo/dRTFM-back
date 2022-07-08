@@ -7,6 +7,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { JwtPayload } from 'jsonwebtoken';
 import { Model } from 'mongoose';
+import { iDocument } from '../document/entities/document.entity';
 import { AuthService } from '../auth/auth.service';
 import { BcryptService } from '../auth/bcrypt.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -17,6 +18,7 @@ import { iUser } from './entities/user.entity';
 export class UserService {
     constructor(
         @InjectModel('User') private readonly User: Model<iUser>,
+        @InjectModel('Document') private readonly Document: Model<iDocument>,
         private readonly auth: AuthService,
         private readonly bcrypt: BcryptService
     ) {}
@@ -96,6 +98,10 @@ export class UserService {
     }
 
     async remove(id: string) {
+        const findUser = await this.User.findById(id);
+        if (!findUser) throw new NotFoundException('User not found');
+        const findDocuments = this.Document.find({ author: findUser.id });
+        if (findDocuments) this.Document.deleteMany({ author: findUser.id });
         return await this.User.findByIdAndDelete(id);
     }
 
@@ -110,8 +116,11 @@ export class UserService {
         if (typeof decodedToken === 'string') {
             throw new UnauthorizedException('Token error, not valid');
         }
-        const user = await this.User.findById(decodedToken.id);
+        const userId = decodedToken.id as string;
+        const user = await this.User.findById(userId);
         if (!user) throw new NotFoundException('User not found');
+        const findDocuments = this.Document.find({ author: user.id });
+        if (findDocuments) this.Document.deleteMany({ author: user.id });
         user.delete();
         return { deleted: true };
     }
