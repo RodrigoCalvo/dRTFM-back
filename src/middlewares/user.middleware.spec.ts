@@ -1,17 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
 import { Model } from 'mongoose';
-import { iDocument } from 'src/document/entities/document.entity';
+import { iDocument } from '../document/entities/document.entity';
 import { AuthService } from '../auth/auth.service';
 import { UserMiddleware } from './user.middleware';
 
 describe('Given UserMiddleware', () => {
     let req = {
         params: { id: 'docId' },
-        get: jest
-            .fn()
-            .mockReturnValue(
-                'bearer token'
-            ),
+        get: jest.fn().mockReturnValue('bearer token'),
     };
     const res: Response = {} as Response;
     const next: NextFunction = jest.fn();

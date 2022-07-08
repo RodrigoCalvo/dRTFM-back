@@ -7,7 +7,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { NextFunction, Request, Response } from 'express';
 import { Model } from 'mongoose';
-import { iDocument } from 'src/document/entities/document.entity';
+import { iDocument } from '../document/entities/document.entity';
 import { AuthService } from '../auth/auth.service';
 
 @Injectable()
