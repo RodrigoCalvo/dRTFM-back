@@ -12,6 +12,7 @@ jobs:
             DBNAME: ${{secrets.DBNAME}}
             TEST_DBNAME: ${{secrets.TEST_DBNAME}}
             SECRET: ${{secrets.SECRET}}
+            CLUSTER: ${{secrets.CLUSTER}}
         steps:
             - name: Git checkout
               uses: actions/checkout@v2
@@ -21,3 +22,4 @@ jobs:
 
             - name: Testing
               run: npm run test
+
