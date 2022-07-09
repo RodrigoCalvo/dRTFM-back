@@ -47,6 +47,7 @@ export class DocumentService {
                 content: baseDocument.content,
                 keywords: baseDocument.keywords,
                 author: user.id,
+                fork: baseDocument.id,
                 visibility: 'public',
             };
             const newDocument = await this.Document.create(newDocumentData);
