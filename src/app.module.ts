@@ -21,8 +21,8 @@ import { AdminMiddleware } from './middlewares/admin.middleware';
                 process.env.CLUSTER
             }.mongodb.net/${
                 process.env.NODE_ENV === 'test'
-                    ? process.env.DBNAME
-                    : process.env.TEST_DBNAME
+                    ? process.env.TEST_DBNAME
+                    : process.env.DBNAME
             }?retryWrites=true&w=majority`
         ),
         UserModule,
