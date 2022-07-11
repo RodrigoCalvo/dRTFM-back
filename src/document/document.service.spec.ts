@@ -141,6 +141,57 @@ describe('DocumentService', () => {
             ).rejects.toThrow();
         });
     });
+
+    //
+    describe('When calling service.addFav with correct ids', () => {
+        test('Then it should return the added document', async () => {
+            mockDocumentModel.findById.mockResolvedValueOnce(mockDocument);
+            const result = await service.addFav('', 'token token');
+            expect(result).toEqual(mockDocument);
+        });
+    });
+    describe('When calling service.addFav with incorrect user id', () => {
+        test('Then it should throw an exception', async () => {
+            mockUserModel.findById.mockResolvedValueOnce(null);
+            await expect(
+                async () => await service.addFav('', 'token token')
+            ).rejects.toThrow();
+        });
+    });
+    describe('When calling service.addFav with incorrect document id', () => {
+        test('Then it should throw an exception', async () => {
+            mockDocumentModel.findById.mockResolvedValueOnce(null);
+            await expect(
+                async () => await service.addFav('', 'token token')
+            ).rejects.toThrow();
+        });
+    });
+    describe('When calling service.addFav with expired token', () => {
+        test('Then it should throw an exception', async () => {
+            mockAuth.decodeToken.mockImplementationOnce(() => {
+                throw new Error();
+            });
+            await expect(
+                async () => await service.addFav('', 'token token')
+            ).rejects.toThrow();
+        });
+    });
+    describe('When calling service.addFav with invalid token', () => {
+        test('Then it should throw an exception', async () => {
+            mockAuth.decodeToken.mockReturnValueOnce('');
+            await expect(
+                async () => await service.addFav('', 'token token')
+            ).rejects.toThrow();
+        });
+    });
+    describe('When calling service.addFav with no token', () => {
+        test('Then it should throw an exception', async () => {
+            await expect(
+                async () => await service.addFav('', '')
+            ).rejects.toThrow();
+        });
+    });
+    //
     describe('When calling service.findAll', () => {
         test('Then it should return all the documents', async () => {
             const result = await service.findAll();
