@@ -42,6 +42,11 @@ export class DocumentController {
         return this.documentService.findOne(id);
     }
 
+    @Patch('fav/:id')
+    addFav(@Param('id') id: string, @Headers('Authorization') token: string) {
+        return this.documentService.addFavourites(id, token);
+    }
+
     @Patch(':id')
     update(
         @Param('id') id: string,
