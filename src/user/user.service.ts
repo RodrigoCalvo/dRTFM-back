@@ -65,11 +65,21 @@ export class UserService {
     }
 
     async findAll() {
-        return await this.User.find();
+        return await this.User.find()
+            .populate('myDocuments', { author: 0 })
+            .populate({
+                path: 'myFavs',
+                populate: { select: 'name', path: 'author' },
+            });
     }
 
     async findOne(id: string) {
-        return await this.User.findById(id);
+        return await this.User.findById(id)
+            .populate('myDocuments', { author: 0 })
+            .populate({
+                path: 'myFavs',
+                populate: { select: 'name', path: 'author' },
+            });
     }
 
     async update(token: string, updateUserDto: UpdateUserDto) {

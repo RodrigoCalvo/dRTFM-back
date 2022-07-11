@@ -12,8 +12,8 @@ export const userSchema = new Schema({
     },
     password: { type: String, required: true, minlength: 4 },
     photo: String,
-    myDocuments: [{ type: SchemaTypes.ObjectId }],
-    myFavs: [{ type: SchemaTypes.ObjectId }],
+    myDocuments: [{ type: SchemaTypes.ObjectId, ref: 'Document' }],
+    myFavs: [{ type: SchemaTypes.ObjectId, ref: 'Document' }],
     role: { type: String, enum: ['user', 'admin'], default: 'user' },
 });
 
