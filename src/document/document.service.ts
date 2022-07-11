@@ -61,6 +61,30 @@ export class DocumentService {
         }
     }
 
+    async addFavourites(idDocument: string, token: string) {
+        if (!token) throw new UnauthorizedException('User not identified');
+        let decodedToken: string | JwtPayload;
+        try {
+            decodedToken = this.auth.decodeToken(token.substring(7));
+        } catch (e) {
+            throw new UnauthorizedException('Token expired');
+        }
+        if (typeof decodedToken === 'string')
+            throw new JsonWebTokenError('Token invalid'); //prueba a ver si Nest gestiona errores de jwt
+        const idUser = decodedToken.id as string;
+        const document = await this.Document.findById(idDocument);
+        const user = await this.User.findById(idUser);
+        if (document && user) {
+            user.myFavs.push(document.id);
+            user.save();
+            return document;
+        } else {
+            throw new NotFoundException(
+                document ? 'User not found' : 'Document not found'
+            );
+        }
+    }
+
     async findAll() {
         return await this.Document.find().populate('author', { name: 1 });
     }
