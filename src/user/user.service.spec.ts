@@ -166,12 +166,22 @@ describe('UserService', () => {
     });
     describe('When calling service.findAll', () => {
         test('Then it should return the founded users', async () => {
+            mockUserModel.find.mockReturnValueOnce({
+                populate: jest.fn().mockReturnValueOnce({
+                    populate: jest.fn().mockResolvedValueOnce(mockUser),
+                }),
+            });
             const result = await service.findAll();
             expect(result).toEqual(mockUser);
         });
     });
     describe('When calling service.findOne', () => {
         test('Then it should return the founded user', async () => {
+            mockUserModel.findById.mockReturnValueOnce({
+                populate: jest.fn().mockReturnValueOnce({
+                    populate: jest.fn().mockResolvedValueOnce(mockUser),
+                }),
+            });
             const result = await service.findOne('');
             expect(result).toEqual(mockUser);
         });

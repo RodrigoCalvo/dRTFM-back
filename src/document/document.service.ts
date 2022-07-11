@@ -61,7 +61,7 @@ export class DocumentService {
         }
     }
 
-    async addFavourites(idDocument: string, token: string) {
+    async addFav(idDocument: string, token: string) {
         if (!token) throw new UnauthorizedException('User not identified');
         let decodedToken: string | JwtPayload;
         try {

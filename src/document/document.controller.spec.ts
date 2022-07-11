@@ -20,6 +20,7 @@ describe('DocumentController', () => {
                         findOne: jest.fn(),
                         update: jest.fn(),
                         remove: jest.fn(),
+                        addFav: jest.fn(),
                     },
                 },
             ],
@@ -67,6 +68,12 @@ describe('DocumentController', () => {
         test('Then service.findOne should be called', () => {
             controller.findOne('');
             expect(service.findOne).toHaveBeenCalled();
+        });
+    });
+    describe('When calling controller.addFav', () => {
+        test('Then service.addFav should be called', () => {
+            controller.addFav('id', 'token');
+            expect(service.addFav).toHaveBeenCalled();
         });
     });
     describe('When calling controller.update', () => {
