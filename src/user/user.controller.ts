@@ -27,7 +27,7 @@ export class UserController {
         @Headers('Authorization') token: string
     ) {
         if (token) {
-            return this.userService.loginWithToken(token.substring(7));
+            return this.userService.loginWithToken(token);
         }
         return this.userService.login(loginData);
     }
