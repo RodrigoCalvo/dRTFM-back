@@ -101,6 +101,11 @@ describe('UserService', () => {
 
     describe('When calling service.login with valid login info', () => {
         test('Then it should return the user data and token', async () => {
+            mockUserModel.findOne.mockReturnValueOnce({
+                populate: jest.fn().mockReturnValueOnce({
+                    populate: jest.fn().mockResolvedValueOnce(mockUser),
+                }),
+            });
             const result = await service.login({
                 email: mockUser.email,
                 password: mockUser.password,
@@ -111,7 +116,11 @@ describe('UserService', () => {
 
     describe('When calling service.login with invalid email', () => {
         test('Then it should throw an unauthorized exception', async () => {
-            mockUserModel.findOne.mockResolvedValueOnce(null);
+            mockUserModel.findOne.mockReturnValueOnce({
+                populate: jest.fn().mockReturnValueOnce({
+                    populate: jest.fn().mockResolvedValueOnce(null),
+                }),
+            });
             expect(async () => {
                 await service.login({
                     email: mockUser.email,
@@ -123,6 +132,11 @@ describe('UserService', () => {
 
     describe('When calling service.login with invalid password', () => {
         test('Then it should throw an unauthorized exception', async () => {
+            mockUserModel.findOne.mockReturnValueOnce({
+                populate: jest.fn().mockReturnValueOnce({
+                    populate: jest.fn().mockResolvedValueOnce(mockUser),
+                }),
+            });
             mockBcrypt.compare.mockReturnValueOnce(false);
             expect(async () => {
                 await service.login({
@@ -134,6 +148,11 @@ describe('UserService', () => {
     });
     describe('When calling service.loginWithToken with a valid token', () => {
         test('Then it should return the user data and token', async () => {
+            mockUserModel.findById.mockReturnValueOnce({
+                populate: jest.fn().mockReturnValueOnce({
+                    populate: jest.fn().mockResolvedValueOnce(mockUser),
+                }),
+            });
             const result = await service.loginWithToken('token');
             expect(result).toEqual(mockResponse);
         });
@@ -158,7 +177,11 @@ describe('UserService', () => {
     });
     describe('When calling service.loginWithToken with a valid token but user does not exist', () => {
         test('Then it should throw an unauthorized exception', async () => {
-            mockUserModel.findById.mockResolvedValueOnce(null);
+            mockUserModel.findById.mockReturnValueOnce({
+                populate: jest.fn().mockReturnValueOnce({
+                    populate: jest.fn().mockResolvedValueOnce(null),
+                }),
+            });
             expect(async () => {
                 await service.loginWithToken('token');
             }).rejects.toThrow();
