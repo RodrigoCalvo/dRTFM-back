@@ -38,7 +38,12 @@ export class UserService {
     async login(loginData: { email: string; password: string }) {
         const findUser = await this.User.findOne({
             email: loginData.email,
-        });
+        })
+            .populate('myDocuments', { author: 0 })
+            .populate({
+                path: 'myFavs',
+                populate: { select: 'name', path: 'author' },
+            });
         if (!findUser) throw new NotFoundException('User does not exist');
         if (!this.bcrypt.compare(loginData.password, findUser.password))
             throw new UnauthorizedException('Login data incorrect');
@@ -56,7 +61,12 @@ export class UserService {
         if (typeof decodedToken === 'string') {
             throw new UnauthorizedException('Token error, not valid');
         } else {
-            const user = await this.User.findById(decodedToken.id);
+            const user = await this.User.findById(decodedToken.id)
+                .populate('myDocuments', { author: 0 })
+                .populate({
+                    path: 'myFavs',
+                    populate: { select: 'name', path: 'author' },
+                });
             if (!user) throw new NotFoundException('User not found');
             //refrescamos token
             const newToken = this.auth.createToken(user.id);
