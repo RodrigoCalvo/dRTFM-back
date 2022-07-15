@@ -33,8 +33,22 @@ export class DocumentController {
     }
 
     @Get('search')
-    search(@Query() query: { q: string }) {
-        return this.documentService.search(query.q);
+    search(@Query() query: { query: string; page?: string; limit?: string }) {
+        let offset = 0;
+        let limit = 10;
+        if (query.page) {
+            offset = Number(query.page);
+            if (Number.isNaN(offset)) {
+                offset = 0;
+            }
+        }
+        if (query.limit) {
+            limit = Number(query.limit);
+            if (Number.isNaN(limit)) {
+                offset = 0;
+            }
+        }
+        return this.documentService.search(query.query, offset, limit);
     }
 
     @Get(':id')
