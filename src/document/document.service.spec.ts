@@ -200,13 +200,20 @@ describe('DocumentService', () => {
     });
     describe('When calling service.search with a less than 3 length query', () => {
         test('Then it should return undefined', async () => {
-            const result = await service.search('');
+            const result = await service.search('', 0, 10);
             expect(result).toBeUndefined();
         });
     });
     describe('When calling service.search with a more than 3 length query', () => {
         test('Then it should return the result of the search', async () => {
-            const result = await service.search('test');
+            mockDocumentModel.find.mockReturnValueOnce({
+                populate: jest.fn().mockReturnValueOnce({
+                    limit: jest.fn().mockReturnValueOnce({
+                        skip: jest.fn().mockResolvedValueOnce(mockDocument),
+                    }),
+                }),
+            });
+            const result = await service.search('test', 0, 10);
             expect(result).toEqual(mockDocument);
         });
     });
