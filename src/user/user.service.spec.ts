@@ -246,6 +246,23 @@ describe('UserService', () => {
             });
         });
     });
+    describe('When calling service.update with user-to-admin intent', () => {
+        test('Then it should return the updated "user" user', async () => {
+            mockAuth.decodeToken.mockReturnValueOnce({ id: 'test' });
+            const result = await service.update('token', {
+                ...mockUser,
+                role: 'admin',
+            });
+            console.log(result);
+
+            expect(result).toEqual({
+                ...mockUser,
+                name: 'updated',
+                password: 'password',
+                // role: 'user', //deleted on schema-return
+            });
+        });
+    });
     describe('When calling service.remove', () => {
         test('Then it should return the founded user', async () => {
             const result = await service.remove('');

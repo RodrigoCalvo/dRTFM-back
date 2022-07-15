@@ -108,6 +108,7 @@ export class UserService {
                 updateUserDto.password
             );
         }
+        if (updateUserDto.role === 'admin') updateUserDto.role = 'user'; //security control
         return await this.User.findByIdAndUpdate(
             decodedToken.id,
             updateUserDto,
