@@ -89,11 +89,14 @@ export class DocumentService {
         return await this.Document.find().populate('author', { name: 1 });
     }
 
-    async search(query: string) {
+    async search(query: string, offset: number, limit: number) {
         if (query.length < 3) return;
         return await this.Document.find({
             keywords: { $regex: query, $options: 'i' },
-        }).populate('author', { name: 1 });
+        })
+            .populate('author', { name: 1 })
+            .limit(limit)
+            .skip(offset);
     }
 
     async findOne(id: string) {

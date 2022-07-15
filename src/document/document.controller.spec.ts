@@ -60,7 +60,19 @@ describe('DocumentController', () => {
     });
     describe('When calling controller.search', () => {
         test('Then service.search should be called', () => {
-            controller.search({ q: '' });
+            controller.search({ query: '' });
+            expect(service.search).toHaveBeenCalled();
+        });
+    });
+    describe('When calling controller.search', () => {
+        test('Then service.search should be called', () => {
+            controller.search({ query: '', page: '1', limit: '3' });
+            expect(service.search).toHaveBeenCalled();
+        });
+    });
+    describe('When calling controller.search', () => {
+        test('Then service.search should be called', () => {
+            controller.search({ query: '', page: 'test', limit: 'test' });
             expect(service.search).toHaveBeenCalled();
         });
     });

@@ -113,7 +113,7 @@ describe('Given the routes /users', () => {
 
     test('/document/search (GET)', async () => {
         const response = await request(app.getHttpServer()).get(
-            '/document/search?q=' + query
+            '/document/search?query=' + query
         );
         expect(response.status).toBe(200);
     });

@@ -253,7 +253,6 @@ describe('UserService', () => {
                 ...mockUser,
                 role: 'admin',
             });
-            console.log(result);
 
             expect(result).toEqual({
                 ...mockUser,
