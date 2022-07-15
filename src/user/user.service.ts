@@ -108,6 +108,7 @@ export class UserService {
                 updateUserDto.password
             );
         }
+        updateUserDto.role = 'user';
         return await this.User.findByIdAndUpdate(
             decodedToken.id,
             updateUserDto,
