@@ -6,6 +6,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { JsonWebTokenError, JwtPayload } from 'jsonwebtoken';
 import { Model } from 'mongoose';
+import { LoadBD } from 'src/helpers/loadBD';
 import { AuthService } from '../auth/auth.service';
 import { iUser } from '../user/entities/user.entity';
 import { CreateDocumentDto } from './dto/create-document.dto';
@@ -17,7 +18,8 @@ export class DocumentService {
     constructor(
         @InjectModel('Document') private readonly Document: Model<iDocument>,
         @InjectModel('User') private readonly User: Model<iUser>,
-        private readonly auth: AuthService
+        private readonly auth: AuthService,
+        private readonly myLoadDB: LoadBD
     ) {}
     async create(createDocumentDto: CreateDocumentDto) {
         const user = await this.User.findById(createDocumentDto.author);
