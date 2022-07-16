@@ -101,15 +101,29 @@ describe('DocumentService', () => {
     describe('When calling service.fork with correct ids', () => {
         test('Then it should return a new document with the new author', async () => {
             mockDocumentModel.create.mockImplementationOnce((args) => args);
-            const result = await service.fork('', 'token token');
+            const result = await service.fork(
+                '123456789012345678901234',
+                'token token'
+            );
             expect(result).toEqual({ ...mockDocument, author: mockUser.id });
+        });
+    });
+    describe('When calling service.fork with incorrect user id length', () => {
+        test('Then it should throw an exception', async () => {
+            await expect(
+                async () => await service.fork('1234567890', 'token token')
+            ).rejects.toThrow();
         });
     });
     describe('When calling service.fork with incorrect user id', () => {
         test('Then it should throw an exception', async () => {
             mockUserModel.findById.mockResolvedValueOnce(null);
             await expect(
-                async () => await service.fork('', 'token token')
+                async () =>
+                    await service.fork(
+                        '123456789012345678901234',
+                        'token token'
+                    )
             ).rejects.toThrow();
         });
     });
@@ -117,7 +131,11 @@ describe('DocumentService', () => {
         test('Then it should throw an exception', async () => {
             mockDocumentModel.findById.mockResolvedValueOnce(null);
             await expect(
-                async () => await service.fork('', 'token token')
+                async () =>
+                    await service.fork(
+                        '123456789012345678901234',
+                        'token token'
+                    )
             ).rejects.toThrow();
         });
     });
@@ -127,7 +145,11 @@ describe('DocumentService', () => {
                 throw new Error();
             });
             await expect(
-                async () => await service.fork('', 'token token')
+                async () =>
+                    await service.fork(
+                        '123456789012345678901234',
+                        'token token'
+                    )
             ).rejects.toThrow();
         });
     });
@@ -135,14 +157,18 @@ describe('DocumentService', () => {
         test('Then it should throw an exception', async () => {
             mockAuth.decodeToken.mockReturnValueOnce('');
             await expect(
-                async () => await service.fork('', 'token token')
+                async () =>
+                    await service.fork(
+                        '123456789012345678901234',
+                        'token token'
+                    )
             ).rejects.toThrow();
         });
     });
     describe('When calling service.fork with no token', () => {
         test('Then it should throw an exception', async () => {
             await expect(
-                async () => await service.fork('', '')
+                async () => await service.fork('123456789012345678901234', '')
             ).rejects.toThrow();
         });
     });
@@ -151,15 +177,29 @@ describe('DocumentService', () => {
     describe('When calling service.addFav with correct ids', () => {
         test('Then it should return the added document', async () => {
             mockDocumentModel.findById.mockResolvedValueOnce(mockDocument);
-            const result = await service.addFav('', 'token token');
+            const result = await service.addFav(
+                '123456789012345678901234',
+                'token token'
+            );
             expect(result).toEqual(mockDocument);
+        });
+    });
+    describe('When calling service.addFav with incorrect document id length', () => {
+        test('Then it should throw an exception', async () => {
+            await expect(
+                async () => await service.addFav('1234567890', 'token token')
+            ).rejects.toThrow();
         });
     });
     describe('When calling service.addFav with incorrect user id', () => {
         test('Then it should throw an exception', async () => {
             mockUserModel.findById.mockResolvedValueOnce(null);
             await expect(
-                async () => await service.addFav('', 'token token')
+                async () =>
+                    await service.addFav(
+                        '123456789012345678901234',
+                        'token token'
+                    )
             ).rejects.toThrow();
         });
     });
@@ -167,7 +207,11 @@ describe('DocumentService', () => {
         test('Then it should throw an exception', async () => {
             mockDocumentModel.findById.mockResolvedValueOnce(null);
             await expect(
-                async () => await service.addFav('', 'token token')
+                async () =>
+                    await service.addFav(
+                        '123456789012345678901234',
+                        'token token'
+                    )
             ).rejects.toThrow();
         });
     });
@@ -177,7 +221,11 @@ describe('DocumentService', () => {
                 throw new Error();
             });
             await expect(
-                async () => await service.addFav('', 'token token')
+                async () =>
+                    await service.addFav(
+                        '123456789012345678901234',
+                        'token token'
+                    )
             ).rejects.toThrow();
         });
     });
@@ -185,14 +233,18 @@ describe('DocumentService', () => {
         test('Then it should throw an exception', async () => {
             mockAuth.decodeToken.mockReturnValueOnce('');
             await expect(
-                async () => await service.addFav('', 'token token')
+                async () =>
+                    await service.addFav(
+                        '123456789012345678901234',
+                        'token token'
+                    )
             ).rejects.toThrow();
         });
     });
     describe('When calling service.addFav with no token', () => {
         test('Then it should throw an exception', async () => {
             await expect(
-                async () => await service.addFav('', '')
+                async () => await service.addFav('123456789012345678901234', '')
             ).rejects.toThrow();
         });
     });
@@ -234,14 +286,31 @@ describe('DocumentService', () => {
             mockDocumentModel.findById.mockReturnValueOnce({
                 populate: jest.fn().mockResolvedValueOnce(mockDocument),
             });
-            const result = await service.findOne('');
+            const result = await service.findOne('123456789012345678901234');
             expect(result).toEqual(mockDocument);
+        });
+    });
+    describe('When calling service.findOne with incorrect document id length', () => {
+        test('Then it should throw an exception', async () => {
+            await expect(
+                async () => await service.findOne('1234567890')
+            ).rejects.toThrow();
         });
     });
     describe('When calling service.update', () => {
         test('Then it should return the updated document', async () => {
-            const result = await service.update('', mockDocument);
+            const result = await service.update(
+                '123456789012345678901234',
+                mockDocument
+            );
             expect(result).toEqual(mockDocument);
+        });
+    });
+    describe('When calling service.update with incorrect document id length', () => {
+        test('Then it should throw an exception', async () => {
+            await expect(
+                async () => await service.update('1234567890', mockDocument)
+            ).rejects.toThrow();
         });
     });
     describe('When calling service.remove', () => {
@@ -249,8 +318,15 @@ describe('DocumentService', () => {
             mockDocumentModel.findById.mockResolvedValue({
                 delete: jest.fn().mockResolvedValue(mockDocument),
             });
-            const result = await service.remove('');
+            const result = await service.remove('123456789012345678901234');
             expect(result).toEqual(mockDocument);
+        });
+    });
+    describe('When calling service.remove with incorrect document id length', () => {
+        test('Then it should throw an exception', async () => {
+            await expect(
+                async () => await service.remove('1234567890')
+            ).rejects.toThrow();
         });
     });
     describe('When calling service.remove with not valid user', () => {
@@ -259,7 +335,9 @@ describe('DocumentService', () => {
                 delete: jest.fn().mockResolvedValue(mockDocument),
             });
             mockUserModel.findByIdAndUpdate.mockResolvedValueOnce(null);
-            expect(async () => await service.remove('')).rejects.toThrow();
+            expect(
+                async () => await service.remove('123456789012345678901234')
+            ).rejects.toThrow();
         });
     });
 });
