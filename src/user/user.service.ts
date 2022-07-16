@@ -1,6 +1,7 @@
 import {
     BadRequestException,
     Injectable,
+    NotAcceptableException,
     NotFoundException,
     UnauthorizedException,
 } from '@nestjs/common';
@@ -84,6 +85,8 @@ export class UserService {
     }
 
     async findOne(id: string) {
+        if (id.length !== 24)
+            throw new NotAcceptableException('ID format not valid');
         return await this.User.findById(id)
             .populate('myDocuments', { author: 0 })
             .populate({
@@ -119,6 +122,8 @@ export class UserService {
     }
 
     async remove(id: string) {
+        if (id.length !== 24)
+            throw new NotAcceptableException('ID format not valid');
         const findUser = await this.User.findById(id);
         if (!findUser) throw new NotFoundException('User not found');
         const findDocuments = this.Document.find({ author: findUser.id });
