@@ -205,8 +205,16 @@ describe('UserService', () => {
                     populate: jest.fn().mockResolvedValueOnce(mockUser),
                 }),
             });
-            const result = await service.findOne('');
+            const result = await service.findOne('123456789012345678901234');
             expect(result).toEqual(mockUser);
+        });
+    });
+
+    describe('When calling service.findOne with invalid user id length', () => {
+        test('Then it should throw an exception', async () => {
+            expect(
+                async () => await service.findOne('1234567890')
+            ).rejects.toThrow();
         });
     });
 
@@ -264,14 +272,23 @@ describe('UserService', () => {
     });
     describe('When calling service.remove', () => {
         test('Then it should return the founded user', async () => {
-            const result = await service.remove('');
+            const result = await service.remove('123456789012345678901234');
             expect(result).toEqual(mockUser);
+        });
+    });
+    describe('When calling service.remove with invalid user id length', () => {
+        test('Then it should throw an exception', async () => {
+            expect(
+                async () => await service.remove('1234567890')
+            ).rejects.toThrow();
         });
     });
     describe('When calling service.remove with invalid user id', () => {
         test('Then it should throw an exception', async () => {
             mockUserModel.findById.mockResolvedValueOnce(null);
-            expect(async () => await service.remove('')).rejects.toThrow();
+            expect(
+                async () => await service.remove('123456789012345678901234')
+            ).rejects.toThrow();
         });
     });
     describe('When calling service.removeSelf with a valid token', () => {

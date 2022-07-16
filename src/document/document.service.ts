@@ -1,5 +1,6 @@
 import {
     Injectable,
+    NotAcceptableException,
     NotFoundException,
     UnauthorizedException,
 } from '@nestjs/common';
@@ -31,6 +32,8 @@ export class DocumentService {
     }
 
     async fork(idDocument: string, token: string) {
+        if (idDocument.length !== 24)
+            throw new NotAcceptableException('ID format not valid');
         if (!token) throw new UnauthorizedException('User not identified');
         let decodedToken: string | JwtPayload;
         try {
@@ -64,6 +67,8 @@ export class DocumentService {
     }
 
     async addFav(idDocument: string, token: string) {
+        if (idDocument.length !== 24)
+            throw new NotAcceptableException('ID format not valid');
         if (!token) throw new UnauthorizedException('User not identified');
         let decodedToken: string | JwtPayload;
         try {
@@ -106,16 +111,22 @@ export class DocumentService {
     }
 
     async findOne(id: string) {
+        if (id.length !== 24)
+            throw new NotAcceptableException('ID format not valid');
         return await this.Document.findById(id).populate('author', { name: 1 });
     }
 
     async update(id: string, updateDocumentDto: UpdateDocumentDto) {
+        if (id.length !== 24)
+            throw new NotAcceptableException('ID format not valid');
         return await this.Document.findByIdAndUpdate(id, updateDocumentDto, {
             new: true,
         });
     }
 
     async remove(id: string) {
+        if (id.length !== 24)
+            throw new NotAcceptableException('ID format not valid');
         const documentToDelete = await this.Document.findById(id);
         const updatedUser = await this.User.findByIdAndUpdate(
             documentToDelete.author,
