@@ -22,6 +22,11 @@ export class DocumentController {
         return this.documentService.create(createDocumentDto);
     }
 
+    @Post('load')
+    loadDB() {
+        return this.documentService.loadDB();
+    }
+
     @Post(':id')
     fork(@Param('id') id: string, @Headers('Authorization') token: string) {
         return this.documentService.fork(id, token);

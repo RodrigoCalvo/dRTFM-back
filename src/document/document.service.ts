@@ -87,6 +87,10 @@ export class DocumentService {
         }
     }
 
+    async loadDB() {
+        return await this.myLoadDB.load();
+    }
+
     async findAll() {
         return await this.Document.find().populate('author', { name: 1 });
     }
