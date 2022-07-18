@@ -103,7 +103,7 @@ export class DocumentService {
     async search(query: string, offset: number, limit: number) {
         if (query.length < 3) return;
         return await this.Document.find({
-            keywords: { $regex: query, $options: 'i' },
+            title: { $regex: query, $options: 'i' },
         })
             .populate('author', { name: 1 })
             .limit(limit)
