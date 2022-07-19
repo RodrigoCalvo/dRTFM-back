@@ -123,7 +123,6 @@ describe('Given the routes /users', () => {
             .patch('/document/' + document1Id)
             .send({ title: 'updated test' })
             .set('Authorization', 'bearer ' + user1Token);
-        // expect(response).toBe(200);
         expect(response.status).toBe(200);
         expect(response.body.title).toBe('updated test');
     });
