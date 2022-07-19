@@ -25,7 +25,9 @@ export class DocumentService {
     async create(createDocumentDto: CreateDocumentDto) {
         const user = await this.User.findById(createDocumentDto.author);
         if (!user) throw new NotFoundException('User not found');
-        const newDocument = await this.Document.create(createDocumentDto);
+        const newDocument = await (
+            await this.Document.create(createDocumentDto)
+        ).populate('author', { name: 1 });
         user.myDocuments.push(newDocument.id);
         user.save();
         return newDocument;
@@ -55,7 +57,9 @@ export class DocumentService {
                 fork: baseDocument.id,
                 visibility: 'public',
             };
-            const newDocument = await this.Document.create(newDocumentData);
+            const newDocument = await (
+                await this.Document.create(newDocumentData)
+            ).populate('author', { name: 1 });
             user.myDocuments.push(newDocument.id);
             user.save();
             return newDocument;
@@ -77,9 +81,12 @@ export class DocumentService {
             throw new UnauthorizedException('Token expired');
         }
         if (typeof decodedToken === 'string')
-            throw new JsonWebTokenError('Token invalid'); //prueba a ver si Nest gestiona errores de jwt
+            throw new UnauthorizedException('Token invalid');
         const idUser = decodedToken.id as string;
-        const document = await this.Document.findById(idDocument);
+        const document = await this.Document.findById(idDocument).populate(
+            'author',
+            { name: 1 }
+        );
         const user = await this.User.findById(idUser);
         if (document && user) {
             user.myFavs.push(document.id);
@@ -97,7 +104,9 @@ export class DocumentService {
     }
 
     async findAll() {
-        return await this.Document.find().populate('author', { name: 1 });
+        return await this.Document.find()
+            .populate('author', { name: 1 })
+            .limit(10);
     }
 
     async search(query: string, offset: number, limit: number) {
@@ -121,13 +130,16 @@ export class DocumentService {
             throw new NotAcceptableException('ID format not valid');
         return await this.Document.findByIdAndUpdate(id, updateDocumentDto, {
             new: true,
-        });
+        }).populate('author', { name: 1 });
     }
 
     async remove(id: string) {
         if (id.length !== 24)
             throw new NotAcceptableException('ID format not valid');
-        const documentToDelete = await this.Document.findById(id);
+        const documentToDelete = await this.Document.findById(id).populate(
+            'author',
+            { name: 1 }
+        );
         const updatedUser = await this.User.findByIdAndUpdate(
             documentToDelete.author,
             {

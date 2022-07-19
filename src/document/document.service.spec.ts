@@ -86,6 +86,9 @@ describe('DocumentService', () => {
     });
     describe('When calling service.create', () => {
         test('Then it should return the saved user', async () => {
+            mockDocumentModel.create.mockReturnValueOnce({
+                populate: jest.fn().mockResolvedValueOnce(mockDocument),
+            });
             const result = await service.create(mockDocument);
             expect(result).toEqual(mockDocument);
         });
@@ -100,7 +103,14 @@ describe('DocumentService', () => {
     });
     describe('When calling service.fork with correct ids', () => {
         test('Then it should return a new document with the new author', async () => {
-            mockDocumentModel.create.mockImplementationOnce((args) => args);
+            mockDocumentModel.create.mockReturnValueOnce({
+                populate: jest.fn().mockResolvedValueOnce({
+                    ...mockDocument,
+                    author: mockUser.id,
+                }),
+            });
+            mockUserModel.findById.mockResolvedValueOnce(mockUser);
+
             const result = await service.fork(
                 '123456789012345678901234',
                 'token token'
@@ -176,7 +186,9 @@ describe('DocumentService', () => {
     //
     describe('When calling service.addFav with correct ids', () => {
         test('Then it should return the added document', async () => {
-            mockDocumentModel.findById.mockResolvedValueOnce(mockDocument);
+            mockDocumentModel.findById.mockReturnValueOnce({
+                populate: jest.fn().mockResolvedValueOnce(mockDocument),
+            });
             const result = await service.addFav(
                 '123456789012345678901234',
                 'token token'
@@ -193,6 +205,9 @@ describe('DocumentService', () => {
     });
     describe('When calling service.addFav with incorrect user id', () => {
         test('Then it should throw an exception', async () => {
+            mockDocumentModel.findById.mockReturnValueOnce({
+                populate: jest.fn().mockResolvedValueOnce(mockDocument),
+            });
             mockUserModel.findById.mockResolvedValueOnce(null);
             await expect(
                 async () =>
@@ -205,7 +220,9 @@ describe('DocumentService', () => {
     });
     describe('When calling service.addFav with incorrect document id', () => {
         test('Then it should throw an exception', async () => {
-            mockDocumentModel.findById.mockResolvedValueOnce(null);
+            mockDocumentModel.findById.mockReturnValueOnce({
+                populate: jest.fn().mockResolvedValueOnce(null),
+            });
             await expect(
                 async () =>
                     await service.addFav(
@@ -258,6 +275,11 @@ describe('DocumentService', () => {
 
     describe('When calling service.findAll', () => {
         test('Then it should return all the documents', async () => {
+            mockDocumentModel.find.mockReturnValueOnce({
+                populate: jest.fn().mockReturnValueOnce({
+                    limit: jest.fn().mockResolvedValueOnce(mockDocument),
+                }),
+            });
             const result = await service.findAll();
             expect(result).toEqual(mockDocument);
         });
@@ -299,6 +321,9 @@ describe('DocumentService', () => {
     });
     describe('When calling service.update', () => {
         test('Then it should return the updated document', async () => {
+            mockDocumentModel.findByIdAndUpdate.mockReturnValueOnce({
+                populate: jest.fn().mockResolvedValueOnce(mockDocument),
+            });
             const result = await service.update(
                 '123456789012345678901234',
                 mockDocument
@@ -315,8 +340,10 @@ describe('DocumentService', () => {
     });
     describe('When calling service.remove', () => {
         test('Then it should return the removed document', async () => {
-            mockDocumentModel.findById.mockResolvedValue({
-                delete: jest.fn().mockResolvedValue(mockDocument),
+            mockDocumentModel.findById.mockReturnValueOnce({
+                populate: jest.fn().mockResolvedValueOnce({
+                    delete: jest.fn().mockResolvedValueOnce(mockDocument),
+                }),
             });
             const result = await service.remove('123456789012345678901234');
             expect(result).toEqual(mockDocument);
@@ -331,8 +358,10 @@ describe('DocumentService', () => {
     });
     describe('When calling service.remove with not valid user', () => {
         test('Then it should return throw an exception', async () => {
-            mockDocumentModel.findById.mockResolvedValueOnce({
-                delete: jest.fn().mockResolvedValue(mockDocument),
+            mockDocumentModel.findById.mockReturnValueOnce({
+                populate: jest.fn().mockResolvedValueOnce({
+                    delete: jest.fn().mockResolvedValueOnce(mockDocument),
+                }),
             });
             mockUserModel.findByIdAndUpdate.mockResolvedValueOnce(null);
             expect(
