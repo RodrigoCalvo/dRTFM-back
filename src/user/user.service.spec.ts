@@ -272,6 +272,7 @@ describe('UserService', () => {
     });
     describe('When calling service.remove', () => {
         test('Then it should return the founded user', async () => {
+            mockDocumentModel.find.mockResolvedValueOnce({});
             const result = await service.remove('123456789012345678901234');
             expect(result).toEqual(mockUser);
         });
@@ -293,6 +294,7 @@ describe('UserService', () => {
     });
     describe('When calling service.removeSelf with a valid token', () => {
         test('Then it should return confirm object', async () => {
+            mockDocumentModel.find.mockResolvedValueOnce({});
             mockUserModel.findById.mockResolvedValueOnce({ delete: jest.fn() });
             const result = await service.removeSelf('token');
             expect(result).toEqual({ deleted: true });
