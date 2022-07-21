@@ -1,6 +1,5 @@
 import { getModelToken, MongooseModule } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import { LoadDB } from '../helpers/loadDB';
 import { AuthService } from '../auth/auth.service';
 import { userSchema } from '../user/entities/user.entity';
 import { DocumentService } from './document.service';
@@ -50,9 +49,6 @@ describe('DocumentService', () => {
         decodeToken: jest.fn().mockReturnValue({ id: 'idTest' }),
         createToken: jest.fn().mockReturnValue('1f1f1f'),
     };
-    const mockLoadDB = {
-        load: jest.fn(),
-    };
     let service: DocumentService;
 
     beforeEach(async () => {
@@ -69,7 +65,6 @@ describe('DocumentService', () => {
                     provide: AuthService,
                     useValue: mockAuth,
                 },
-                { provide: LoadDB, useValue: mockLoadDB },
             ],
         })
             .overrideProvider(getModelToken('User'))
@@ -263,13 +258,6 @@ describe('DocumentService', () => {
             await expect(
                 async () => await service.addFav('123456789012345678901234', '')
             ).rejects.toThrow();
-        });
-    });
-    describe('When calling service.loadDB', () => {
-        test('Then it should return the call LoadDB.load return', async () => {
-            mockLoadDB.load.mockResolvedValueOnce(false);
-            const result = await service.loadDB();
-            expect(result).toBeFalsy();
         });
     });
 

@@ -6,7 +6,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { documentSchema } from './entities/document.entity';
 import { userSchema } from '../user/entities/user.entity';
 import { AuthService } from '../auth/auth.service';
-import { LoadDB } from '../helpers/loadDB';
 
 @Module({
     imports: [
@@ -16,6 +15,6 @@ import { LoadDB } from '../helpers/loadDB';
         ]),
     ],
     controllers: [DocumentController],
-    providers: [DocumentService, AuthService, LoadDB],
+    providers: [DocumentService, AuthService],
 })
 export class DocumentModule {}
