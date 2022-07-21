@@ -47,12 +47,6 @@ describe('DocumentController', () => {
         });
     });
 
-    describe('When calling controller.load', () => {
-        test('Then service.load should be called', () => {
-            controller.loadDB();
-            expect(service.loadDB).toHaveBeenCalled();
-        });
-    });
     describe('When calling controller.fork', () => {
         test('Then service.fork should be called', () => {
             controller.fork('', '');
