@@ -245,6 +245,14 @@ describe('UserService', () => {
     });
     describe('When calling service.update', () => {
         test('Then it should return the updated user', async () => {
+            mockUserModel.findByIdAndUpdate.mockReturnValueOnce({
+                populate: jest.fn().mockReturnValueOnce({
+                    populate: jest.fn().mockResolvedValueOnce({
+                        ...mockUser,
+                        name: 'updated',
+                    }),
+                }),
+            });
             mockAuth.decodeToken.mockReturnValueOnce({ id: 'test' });
             const result = await service.update('token', mockUser);
             expect(result).toEqual({
@@ -257,6 +265,14 @@ describe('UserService', () => {
     describe('When calling service.update with user-to-admin intent', () => {
         test('Then it should return the updated "user" user', async () => {
             mockAuth.decodeToken.mockReturnValueOnce({ id: 'test' });
+            mockUserModel.findByIdAndUpdate.mockReturnValueOnce({
+                populate: jest.fn().mockReturnValueOnce({
+                    populate: jest.fn().mockResolvedValueOnce({
+                        ...mockUser,
+                        name: 'updated',
+                    }),
+                }),
+            });
             const result = await service.update('token', {
                 ...mockUser,
                 role: 'admin',
@@ -265,7 +281,7 @@ describe('UserService', () => {
             expect(result).toEqual({
                 ...mockUser,
                 name: 'updated',
-                password: 'password',
+                password: 'hashpw',
                 // role: 'user', //deleted on schema-return
             });
         });

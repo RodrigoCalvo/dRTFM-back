@@ -118,7 +118,12 @@ export class UserService {
             {
                 new: true,
             }
-        );
+        )
+            .populate('myDocuments', { author: 0 })
+            .populate({
+                path: 'myFavs',
+                populate: { select: 'name', path: 'author' },
+            });
     }
 
     async remove(id: string) {
